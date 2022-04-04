@@ -1,0 +1,47 @@
+.navLink_header {
+    margin-right: 20px;
+    text-decoration: none;
+    color: rgb(54, 54, 54);
+    font-size: x-large;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+}
+
+.active_header,
+.navLink_header:hover {
+    border-bottom: 2px solid green;
+}
+
+.navLink_sidebar {
+    text-decoration: none;
+    color: rgb(54, 54, 54);
+    font-size: x-large;
+    cursor: pointer;
+}
+
+.active_sidebar,
+.navLink_sidebar:hover {
+    color: green;
+}
+
+@media screen and (max-width: 720px) {
+    .navLink_header {
+        font-size: larger;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .navLink_header {
+        font-size: large;
+    }
+    .caret {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .navLink_header {
+        font-size: medium;
+    }
+}

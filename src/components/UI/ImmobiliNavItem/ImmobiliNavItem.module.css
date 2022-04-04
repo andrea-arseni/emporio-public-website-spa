@@ -1,0 +1,61 @@
+.immobileNavItem_header,
+.immobileNavItem_sidebar {
+    margin-right: 20px;
+    text-decoration: none;
+    color: rgb(54, 54, 54);
+    font-size: x-large;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    position: relative;
+    top: 3px;
+}
+
+.options {
+    position: absolute;
+    margin-top: 10px;
+    border: 1px solid rgba(218, 218, 218, 1);
+    border-radius: 5px;
+    padding: 9px;
+    box-shadow: 1px 1px 8px rgb(202, 202, 202);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+    background-color: white;
+    font-size: larger;
+}
+
+.options div {
+    padding: 4px;
+    cursor: pointer;
+}
+
+.options div:hover {
+    color: rgb(15, 100, 55);
+}
+
+@media screen and (max-width: 720px) {
+    .immobileNavItem_header {
+        font-size: larger;
+    }
+    .options {
+        font-size: large;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .immobileNavItem_header {
+        font-size: large;
+    }
+    .caret {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .immobileNavItem_header,
+    .options {
+        font-size: medium;
+    }
+}
