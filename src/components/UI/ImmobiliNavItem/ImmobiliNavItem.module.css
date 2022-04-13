@@ -24,6 +24,7 @@
     flex-flow: column;
     background-color: white;
     font-size: larger;
+    z-index: 3000;
 }
 
 .options div {

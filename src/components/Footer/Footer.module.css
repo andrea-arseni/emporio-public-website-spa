@@ -4,6 +4,7 @@
     justify-content: space-between;
     padding: 0 10px;
     background: linear-gradient(to left, white, rgb(248, 236, 236));
+    height: 40px;
 }
 
 .footer div {

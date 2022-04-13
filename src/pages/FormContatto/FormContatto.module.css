@@ -1,0 +1,58 @@
+.formWrapper {
+    height: calc(100vh - 180px);
+    position: relative;
+    background: linear-gradient(
+        to left,
+        rgb(248, 232, 232),
+        rgb(252, 250, 229)
+    );
+    z-index: 10;
+}
+
+.form {
+    flex-flow: column;
+    justify-content: space-around;
+    padding: 30px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    max-width: 500px;
+    background: linear-gradient(
+        to left,
+        rgb(245, 248, 251),
+        rgb(233, 242, 246)
+    );
+}
+
+.form * {
+    width: 80%;
+}
+
+.formValutazione {
+    height: 70%;
+}
+
+.formDomanda {
+    height: 86%;
+}
+
+.privacySection {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: small;
+    transition: all 1s;
+}
+
+.evidence {
+    transition: all 1s;
+    color: red;
+}
+
+.notEvidence {
+    transition: all 1s;
+    color: color;
+}
+
+.privacyCheckButton {
+    width: 8%;
+}

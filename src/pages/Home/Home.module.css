@@ -1,0 +1,183 @@
+.home {
+    height: calc(100vh - 180px);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(rgb(53, 53, 53), gray);
+    z-index: 10;
+}
+
+.heroImage {
+    background-color: #cccccc;
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    opacity: 0;
+    z-index: inherit;
+}
+
+.one {
+    background-image: url("../../assets/attività.jpg");
+    animation-name: one;
+    animation-duration: 60s;
+    animation-iteration-count: infinite;
+}
+
+.two {
+    background-image: url("../../assets/bed.jpg");
+    animation-name: two;
+    animation-duration: 60s;
+    animation-iteration-count: infinite;
+}
+
+.three {
+    background-image: url("../../assets/capannone.jpg");
+    animation-name: three;
+    animation-duration: 60s;
+    animation-iteration-count: infinite;
+}
+
+.four {
+    background-image: url("../../assets/contacts.jpg");
+    animation-name: four;
+    animation-duration: 60s;
+    animation-iteration-count: infinite;
+}
+
+.five {
+    background-image: url("../../assets/renovate.jpg");
+    opacity: 1;
+    animation-name: five;
+    animation-duration: 60s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes one {
+    0% {
+        opacity: 0;
+        transform: translate(-20px, 0);
+    }
+    20% {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+    40% {
+        opacity: 0;
+        transform: translate(20px, 0);
+    }
+}
+
+@keyframes two {
+    20% {
+        opacity: 0;
+        transform: translate(20px, 0);
+    }
+    40% {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+    60% {
+        opacity: 0;
+        transform: translate(-20px, 0);
+    }
+}
+
+@keyframes three {
+    40% {
+        opacity: 0;
+        transform: translate(25px, 0);
+    }
+    60% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+    80% {
+        opacity: 0;
+        transform: translate(20px, 0);
+    }
+}
+
+@keyframes four {
+    60% {
+        opacity: 0;
+        transform: translate(-20px, 0);
+    }
+    80% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(50px, 0);
+    }
+}
+
+@keyframes five {
+    0% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+    20% {
+        opacity: 0;
+        transform: translate(-20px, 0px);
+    }
+    80% {
+        opacity: 0;
+        transform: translate(20px, 0px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+
+.jumbotron {
+    position: absolute;
+    top: 20%;
+    left: 8%;
+    width: 50%;
+    min-width: 300px;
+    background-color: white;
+    border: 1px solid gray;
+    z-index: 300;
+    border-radius: 6px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+}
+
+.jumbotron h2 {
+    padding: 12px 20px 0 20px;
+}
+
+.jumbotron p {
+    padding: 0 20px 4px 20px;
+    text-align: justify;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 12px;
+}
+
+.buttons * {
+    margin: 0 4px;
+}
+
+@media screen and (max-width: 700px) {
+    .jumbotron {
+        top: 15%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .jumbotron {
+        top: 10%;
+    }
+}

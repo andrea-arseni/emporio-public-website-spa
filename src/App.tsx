@@ -1,13 +1,14 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
-import "./App.css";
+import styles from "./App.module.css";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Contatti from "./pages/Contatti/Contatti";
 import Cookies from "./pages/Cookies/Cookies";
 import Emporio from "./pages/Emporio/Emporio";
+import FormContatto from "./pages/FormContatto/FormContatto";
 import Home from "./pages/Home/Home";
 import Immobili from "./pages/Immobili/Immobili";
 import NotFound from "./pages/NotFound/NotFound";
@@ -32,7 +33,7 @@ const App: React.FC<{
     };
 
     return (
-        <div onClick={hideOptionsOpened}>
+        <div className={styles.app} onClick={hideOptionsOpened}>
             <Header />
             {isSidebarVisible && <Sidebar />}
             <Routes>
@@ -44,6 +45,14 @@ const App: React.FC<{
                 <Route path="/contatti" element={<Contatti />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/cookies" element={<Cookies />} />
+                <Route
+                    path="/valutazione-gratuita"
+                    element={<FormContatto type="valutazione" />}
+                />
+                <Route
+                    path="/richiesta-informazioni"
+                    element={<FormContatto type="domanda" />}
+                />
                 <Route path="*" element={<NotFound />} />
             </Routes>
             <Footer />
@@ -54,6 +63,5 @@ const App: React.FC<{
 export default App;
 
 /* 
-- refactor - vinto
-- footer
+- Testing
 */

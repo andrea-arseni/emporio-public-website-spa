@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { hideSidebar } from "../../store/header-slice";
 import NavItem from "../UI/NavItem/NavItem";
 import ImmobiliNavItem from "../UI/ImmobiliNavItem/ImmobiliNavItem";
+import { Fragment } from "react";
 
 const Sidebar: React.FC<{}> = () => {
     const dispatch = useDispatch();
@@ -10,7 +11,7 @@ const Sidebar: React.FC<{}> = () => {
     const hideSidebarHandler = () => dispatch(hideSidebar());
 
     return (
-        <div className={styles.gray}>
+        <Fragment>
             <nav className={styles.sidebar}>
                 <ul className={styles.list}>
                     <li onClick={hideSidebarHandler}>
@@ -28,7 +29,7 @@ const Sidebar: React.FC<{}> = () => {
                 </ul>
             </nav>
             <div className={styles.backdrop} onClick={hideSidebarHandler}></div>
-        </div>
+        </Fragment>
     );
 };
 

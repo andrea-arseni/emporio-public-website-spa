@@ -1,0 +1,44 @@
+.inputWrapper {
+    padding: 10px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    flex-flow: column;
+    background-color: white;
+}
+
+.inputWrapper * {
+    width: 100%;
+}
+
+.inputWrapper label {
+    font-size: small;
+}
+
+.inputWrapper input {
+    font-size: large;
+    border: 1px solid transparent;
+    width: 100%;
+}
+
+.inputWrapper textarea {
+    border: 1px solid transparent;
+    width: 95%;
+    resize: none;
+}
+
+.inputWrapper input:active {
+    border: 1px solid transparent;
+}
+
+.invalid {
+    border: 1px solid rgb(250, 165, 165);
+    box-shadow: 0 0 5px rgb(250, 165, 165);
+    color: red;
+}
+
+.errorMessage {
+    font-size: small;
+    color: red;
+    position: relative;
+    left: -6px;
+}

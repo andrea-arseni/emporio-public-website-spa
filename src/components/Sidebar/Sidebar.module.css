@@ -1,42 +1,36 @@
-.gray {
-    background-color: rgba(0, 0, 0, 0.6);
-}
-
 .backdrop {
     width: calc(100vw - 210px);
-    height: calc(100vh - 140px);
+    height: calc(100vh - 180px);
     padding: 0;
     margin: 0;
     position: absolute;
     top: 140px;
     right: 0;
     border: 1px solid transparent;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.6);
+    animation: animation 0.4s linear;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .sidebar {
-        animation: sidebar-animation 0.4s linear;
-    }
-}
-
-@keyframes sidebar-animation {
+@keyframes animation {
     from {
-        transform: translateX(-10vw);
         opacity: 0;
     }
     to {
-        transform: translateX(0);
         opacity: 1;
     }
 }
 
 .sidebar {
+    position: absolute;
     margin: 0;
     padding: 0;
     width: 210px;
-    height: calc(100vh - 140px);
+    height: calc(100vh - 180px);
     background-color: white;
     border: 1px solid transparent;
+    z-index: 100;
+    animation: animation 0.4s linear;
 }
 
 .list {

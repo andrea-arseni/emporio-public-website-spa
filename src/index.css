@@ -3,3 +3,22 @@ body {
     padding: 0;
     font-family: "Lato", sans-serif;
 }
+
+.centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+.grecaptcha-badge {
+    z-index: 9999;
+    position: relative;
+    top: calc(100vh-120px);
+}

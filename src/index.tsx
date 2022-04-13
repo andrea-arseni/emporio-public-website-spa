@@ -1,5 +1,6 @@
 import React from "react";
 import * as ReactDOMClient from "react-dom/client";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
@@ -13,11 +14,13 @@ const root = ReactDOMClient.createRoot(container);
 
 root.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <Provider store={store}>
-                <App id={7} />
-            </Provider>
-        </BrowserRouter>
+        <GoogleReCaptchaProvider reCaptchaKey="6LfRA3EfAAAAAEPxX-v4VzebIYDTBHFBTxncbBDX">
+            <BrowserRouter>
+                <Provider store={store}>
+                    <App id={7} />
+                </Provider>
+            </BrowserRouter>
+        </GoogleReCaptchaProvider>
     </React.StrictMode>
 );
 
