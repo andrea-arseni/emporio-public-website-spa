@@ -4,6 +4,11 @@ body {
     font-family: "Lato", sans-serif;
 }
 
+.blue {
+    background: linear-gradient(to left, rgb(213, 225, 242), rgb(94, 142, 223));
+    z-index: 0;
+}
+
 .centered {
     display: flex;
     align-items: center;
@@ -18,7 +23,74 @@ button:focus {
 }
 
 .grecaptcha-badge {
-    z-index: 9999;
+    z-index: 8000;
     position: relative;
     top: calc(100vh-120px);
+}
+
+.page {
+    height: calc(100vh - 180px);
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+    overflow: scroll;
+}
+
+.row {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.link {
+    text-decoration: none;
+    color: rgb(53, 111, 234);
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.col-md-3 {
+    float: left;
+    box-sizing: border-box;
+    padding: 20px;
+    margin: 5px;
+    height: 100%;
+    width: calc(25% - 10px);
+}
+
+.col-md-2 {
+    float: left;
+    box-sizing: border-box;
+    padding: 20px;
+    margin: 5px;
+    width: calc(50% - 10px);
+    height: 95%;
+}
+
+@media screen and (max-width: 800px) {
+    .col-md-3 {
+        width: calc(33.3% - 10px);
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .col-md-3 {
+        width: calc(50% - 10px);
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .col-md-2 {
+        padding: 10px;
+        width: calc(100% - 10px);
+        height: auto;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .col-md-3 {
+        width: calc(100% - 10px);
+    }
 }

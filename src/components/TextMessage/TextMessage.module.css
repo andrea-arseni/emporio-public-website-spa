@@ -1,0 +1,30 @@
+.text {
+    padding: 30px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    max-width: 500px;
+    background: linear-gradient(
+        to left,
+        rgb(251, 249, 245),
+        rgb(251, 251, 241)
+    );
+    text-align: center;
+    flex-flow: column;
+    position: relative;
+    left: -5%;
+    z-index: 1000;
+}
+
+@media screen and (max-width: 1200px) {
+    .text {
+        left: -2%;
+        padding: 20px;
+        width: 30%;
+    }
+}
+
+@media screen and (max-width: 950px) {
+    .text {
+        display: none;
+    }
+}

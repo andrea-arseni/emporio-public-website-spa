@@ -1,13 +1,61 @@
-import { useNavigate } from "react-router-dom";
+import { Fragment, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { services } from "../../static-data/services";
+import Form from "../../components/Form/Form";
+import TextMessage from "../../components/TextMessage/TextMessage";
 import Button from "../../components/UI/Button/Button";
 import styles from "./Home.module.css";
 
-type pageType = "valutazione-gratuita" | "richiesta-informazioni";
-
 const Home: React.FC = () => {
+    const location = useLocation();
     const navigate = useNavigate();
 
-    const moveToFormHandler = (pageType: pageType) => navigate(`/${pageType}`);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [isFormWithTextArea, setIsFormWithTextArea] = useState(false);
+
+    const changeFormHandler = () =>
+        setIsFormWithTextArea((prevState) => !prevState);
+
+    const defaultMessage = (
+        <Fragment>
+            {" "}
+            <h2>Vuoi una valutazione gratuita?</h2>
+            <p>
+                Il primo passo per poter vendere o affittare con successo il
+                proprio immobile è conoscere con precisione il suo valore di
+                mercato.
+                <br />
+                Noi, lavorando nel mercato dal 1985, possiamo fornire sia una
+                valutazione gratuita di un immobile che aiutarvi a risolvere
+                dubbi ed a rispondere alle più variegate domande in tema
+                immobiliare, in modo totalmente gratuito e senza impegno.
+            </p>
+            <div className={styles.buttons}>
+                <Button color="blue" onClick={changeFormHandler}>
+                    {isFormWithTextArea
+                        ? "Torna come prima"
+                        : "Vorrei Fare una Domanda"}
+                </Button>
+            </div>
+        </Fragment>
+    );
+
+    const key = location.pathname.split("/").pop();
+
+    let serviceMessage = null;
+
+    if (key !== "home") {
+        const service = services.find((el) => el.name === key);
+        try {
+            const textArray = service!.message;
+            serviceMessage = textArray.map((el, index) => (
+                <p key={index}>{el}</p>
+            ));
+        } catch (e) {
+            navigate("/");
+        }
+    }
 
     const indexesImages = ["one", "two", "three", "four", "five"];
     const classes = [];
@@ -19,42 +67,18 @@ const Home: React.FC = () => {
     const images = classes.map((el) => <div key={el} className={el}></div>);
 
     return (
-        <div className={styles.home}>
+        <div className={`page row ${serviceMessage ? styles.blue : ""}`}>
             <div className={styles.jumbotron}>
-                <h2>Vuoi una valutazione gratuita?</h2>
-                <p>
-                    Il primo passo per poter vendere o affittare con successo il
-                    proprio immobile è conoscere con precisione il suo valore di
-                    mercato.
-                    <br />
-                    Noi, lavorando nel mercato dal 1985, possiamo fornire sia
-                    una valutazione gratuita di un immobile che aiutarvi a
-                    risolvere dubbi ed a rispondere alle più variegate domande
-                    in tema immobiliare, in modo totalmente gratuito e senza
-                    impegno.
-                </p>
-                <div className={styles.buttons}>
-                    <Button
-                        color="green"
-                        onClick={moveToFormHandler.bind(
-                            null,
-                            "valutazione-gratuita"
-                        )}
-                    >
-                        Sì, la voglio
-                    </Button>
-                    <Button
-                        color="green_outline"
-                        onClick={moveToFormHandler.bind(
-                            null,
-                            "richiesta-informazioni"
-                        )}
-                    >
-                        Ho una domanda
-                    </Button>
-                </div>
+                <TextMessage>
+                    {serviceMessage ? serviceMessage : defaultMessage}
+                </TextMessage>
             </div>
-            {images}
+            <Form
+                isTextAreaVisible={isFormWithTextArea}
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+            />
+            {!serviceMessage && images}
         </div>
     );
 };

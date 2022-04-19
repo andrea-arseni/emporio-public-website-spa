@@ -1,25 +1,14 @@
-.formWrapper {
-    height: calc(100vh - 180px);
-    position: relative;
-    background: linear-gradient(
-        to left,
-        rgb(248, 232, 232),
-        rgb(252, 250, 229)
-    );
-    z-index: 10;
-}
-
 .form {
     flex-flow: column;
     justify-content: space-around;
-    padding: 30px;
     border: 1px solid gray;
     border-radius: 4px;
     max-width: 500px;
+    z-index: 1000;
     background: linear-gradient(
         to left,
-        rgb(245, 248, 251),
-        rgb(233, 242, 246)
+        rgb(251, 249, 245),
+        rgb(251, 251, 241)
     );
 }
 
@@ -27,12 +16,22 @@
     width: 80%;
 }
 
+.formValutazione * {
+    margin-top: 10px;
+}
+
 .formValutazione {
     height: 70%;
+    padding: 30px;
+}
+
+.formDomanda * {
+    margin-top: 5px;
 }
 
 .formDomanda {
     height: 86%;
+    padding: 15px 30px;
 }
 
 .privacySection {

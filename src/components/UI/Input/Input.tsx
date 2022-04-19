@@ -41,7 +41,7 @@ const Input: React.FC<{
                 )}
             </div>
             <div className={styles.errorMessage}>
-                {props.isInvalid ? props.invalidMessage : ""}
+                {props.isInvalid ? props.invalidMessage : " "}
             </div>
         </Fragment>
     );

@@ -1,0 +1,19 @@
+.privacy {
+    padding: 0 36px 0 36px;
+}
+
+.privacy h1,
+.privacy h2,
+.privacy h3 {
+    font-weight: 300;
+}
+
+.privacy a {
+    text-decoration: none;
+    color: rgb(43, 105, 237);
+    font-weight: 300;
+}
+
+.privacy a:hover {
+    text-decoration: underline;
+}

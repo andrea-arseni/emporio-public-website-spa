@@ -1,22 +1,27 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { useCallback, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { Link, useNavigate } from "react-router-dom";
-import Modal from "../../components/Modal/Modal";
-import Button from "../../components/UI/Button/Button";
-import Input from "../../components/UI/Input/Input";
-import useInput from "../../hooks/use-input";
-import styles from "./FormContatto.module.css";
-import { URL } from "../../env";
-import Spinner from "../../components/UI/Spinner/Spinner";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import useInput from "../../hooks/use-input";
+import Modal from "../Modal/Modal";
+import Button from "../UI/Button/Button";
+import Input from "../UI/Input/Input";
+import Spinner from "../UI/Spinner/Spinner";
+import styles from "./Form.module.css";
 
-const FormContatto: React.FC<{
-    type: "valutazione" | "domanda";
+const Form: React.FC<{
+    isTextAreaVisible: boolean;
+    isLoading: boolean;
+    setIsLoading: (newState: boolean) => void;
 }> = (props) => {
     let inputDomandaIsInvalid = undefined;
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const locationParts = location.pathname.split("/");
+    const isServiceRoute = location.pathname.includes("servizi");
+    const key = locationParts.pop();
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -26,11 +31,7 @@ const FormContatto: React.FC<{
             return;
         }
         await executeRecaptcha();
-    }, []);
-
-    useEffect(() => {
-        handleReCaptchaVerify();
-    }, [handleReCaptchaVerify]);
+    }, [executeRecaptcha]);
 
     const inputNameRef = useRef<HTMLInputElement>(null);
     const inputTelefonoRef = useRef<HTMLInputElement>(null);
@@ -86,7 +87,7 @@ const FormContatto: React.FC<{
         inputEmailIsInvalid ||
         inputTelefonoIsInvalid ||
         !privacyChecked ||
-        (props.type === "domanda" && inputDomandaIsInvalid);
+        (props.isTextAreaVisible && inputDomandaIsInvalid);
 
     const focusOnWrongInput = () => {
         if (inputNameValue.trim() === "" || inputNameIsInvalid) {
@@ -106,8 +107,6 @@ const FormContatto: React.FC<{
 
     const [formCompleted, setFormCompleted] = useState(false);
 
-    const [isLoading, setIsLoading] = useState(false);
-
     const [errorMessage, setErrorMessage] = useState("");
 
     const submitForm = async (event: React.FormEvent) => {
@@ -123,20 +122,22 @@ const FormContatto: React.FC<{
             email: inputEmailRef.current!.value,
             note: "Richiesta Valutazione Gratuita",
         };
-        if (props.type === "domanda")
+        if (isServiceRoute) {
+            reqBody.note = key!.replace("-", " ");
+        } else if (props.isTextAreaVisible)
             reqBody.note = inputDomandaRef.current!.value
                 ? "Domanda Generica: " + inputDomandaRef.current!.value
                 : "Inviata Domanda ma non ha scritto niente";
         try {
-            setIsLoading(true);
+            props.setIsLoading(true);
             await axios.post(URL + "persone/private", reqBody);
-            setIsLoading(false);
+            props.setIsLoading(false);
             inputEmailReset();
             inputNameReset();
             inputTelefonoReset();
             setFormCompleted(true);
         } catch (error: any) {
-            setIsLoading(false);
+            props.setIsLoading(false);
             if (error.response) {
                 setErrorMessage(error.response.data.message);
             } else {
@@ -147,13 +148,13 @@ const FormContatto: React.FC<{
 
     return (
         <div className={`${styles.formWrapper} centered`}>
-            {isLoading && <Spinner type="blue" />}
-            {!isLoading && (
+            {props.isLoading && <Spinner type="white" />}
+            {!props.isLoading && (
                 <form
                     className={`${styles.form} ${
-                        props.type === "valutazione"
-                            ? styles.formValutazione
-                            : styles.formDomanda
+                        props.isTextAreaVisible
+                            ? styles.formDomanda
+                            : styles.formValutazione
                     } centered`}
                 >
                     <Input
@@ -192,7 +193,7 @@ const FormContatto: React.FC<{
                     >
                         Indirizzo Email
                     </Input>
-                    {props.type === "domanda" && (
+                    {props.isTextAreaVisible && !isServiceRoute && (
                         <Input
                             type="textarea"
                             id="domanda"
@@ -226,11 +227,11 @@ const FormContatto: React.FC<{
                     <Button
                         color="blue"
                         onClick={submitForm}
-                        disabled={isFormInvalid || isLoading}
+                        disabled={isFormInvalid || props.isLoading}
                     >
-                        {props.type === "valutazione"
+                        {!isServiceRoute && !props.isTextAreaVisible
                             ? "Richiedi Valutazione Gratuita"
-                            : "Invia la Domanda"}
+                            : "Invia"}
                     </Button>
                 </form>
             )}
@@ -240,7 +241,7 @@ const FormContatto: React.FC<{
                         header="Ottimo!"
                         text={[
                             `Abbiamo ricevuto la tua richiesta ${
-                                props.type === "valutazione"
+                                !isServiceRoute && !props.isTextAreaVisible
                                     ? `di valutazione gratuita`
                                     : ``
                             }!`,
@@ -285,4 +286,4 @@ const FormContatto: React.FC<{
     );
 };
 
-export default FormContatto;
+export default Form;
