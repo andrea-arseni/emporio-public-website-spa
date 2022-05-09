@@ -1,0 +1,44 @@
+.wrapperTv {
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 1s;
+}
+
+.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.ended {
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+.absolute {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+
+.imageTv {
+    z-index: 8002;
+}
+
+.text {
+    z-index: 8004;
+    text-transform: uppercase;
+    font-size: large;
+    font-weight: bold;
+    padding: 0 20%;
+    color: white;
+    text-align: center;
+    box-sizing: border-box;
+    font-size: x-large;
+}
+
+.darkBackdrop {
+    z-index: 8003;
+    background-color: rgba(0, 0, 0, 0.5);
+}

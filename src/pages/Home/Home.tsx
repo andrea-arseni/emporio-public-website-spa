@@ -1,26 +1,29 @@
-import { Fragment, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { services } from "../../static-data/services";
-import Form from "../../components/Form/Form";
+import { Fragment, useRef, useState } from "react";
+import ContactForm from "../../components/ContactForm/ContactForm";
 import TextMessage from "../../components/TextMessage/TextMessage";
 import Button from "../../components/UI/Button/Button";
 import styles from "./Home.module.css";
+import ImagesBackdrop from "../../components/ImagesBackdrop/ImagesBackdrop";
 
-const Home: React.FC = () => {
-    const location = useLocation();
-    const navigate = useNavigate();
-
-    const [isLoading, setIsLoading] = useState(false);
+const Home: React.FC<{}> = () => {
+    const formElement = useRef<HTMLInputElement>(null);
 
     const [isFormWithTextArea, setIsFormWithTextArea] = useState(false);
 
-    const changeFormHandler = () =>
+    const changeFormHandler = () => {
         setIsFormWithTextArea((prevState) => !prevState);
+        formElement.current!.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    };
 
     const defaultMessage = (
         <Fragment>
             {" "}
-            <h2>Vuoi una valutazione gratuita?</h2>
+            <h2 style={{ fontWeight: "normal" }}>
+                Vuoi una valutazione gratuita?
+            </h2>
             <p>
                 Il primo passo per poter vendere o affittare con successo il
                 proprio immobile è conoscere con precisione il suo valore di
@@ -41,45 +44,19 @@ const Home: React.FC = () => {
         </Fragment>
     );
 
-    const key = location.pathname.split("/").pop();
-
-    let serviceMessage = null;
-
-    if (key !== "home") {
-        const service = services.find((el) => el.name === key);
-        try {
-            const textArray = service!.message;
-            serviceMessage = textArray.map((el, index) => (
-                <p key={index}>{el}</p>
-            ));
-        } catch (e) {
-            navigate("/");
-        }
-    }
-
-    const indexesImages = ["one", "two", "three", "four", "five"];
-    const classes = [];
-
-    for (let i = 0; i < 5; i++) {
-        classes.push(`${styles.heroImage} ${styles[indexesImages[i]]}`);
-    }
-
-    const images = classes.map((el) => <div key={el} className={el}></div>);
-
     return (
-        <div className={`page row ${serviceMessage ? styles.blue : ""}`}>
-            <div className={styles.jumbotron}>
-                <TextMessage>
-                    {serviceMessage ? serviceMessage : defaultMessage}
-                </TextMessage>
+        <Fragment>
+            <div className={`page row`}>
+                <div className="col-6 centered">
+                    <TextMessage>{defaultMessage}</TextMessage>
+                </div>
+                <ContactForm
+                    ref={formElement}
+                    isTextAreaVisible={isFormWithTextArea}
+                />
             </div>
-            <Form
-                isTextAreaVisible={isFormWithTextArea}
-                isLoading={isLoading}
-                setIsLoading={setIsLoading}
-            />
-            {!serviceMessage && images}
-        </div>
+            <ImagesBackdrop />
+        </Fragment>
     );
 };
 

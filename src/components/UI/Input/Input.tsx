@@ -21,7 +21,10 @@ const Input: React.FC<{
                     props.isInvalid && styles.invalid
                 }`}
             >
-                <label htmlFor={props.id}>{props.children}</label>
+                <label htmlFor={props.id}>
+                    {props.children}{" "}
+                    {props.isInvalid ? "* " + props.invalidMessage : " "}
+                </label>
                 {props.type !== "textarea" && (
                     <input
                         ref={ref}
@@ -39,9 +42,6 @@ const Input: React.FC<{
                         ref={ref}
                     ></textarea>
                 )}
-            </div>
-            <div className={styles.errorMessage}>
-                {props.isInvalid ? props.invalidMessage : " "}
             </div>
         </Fragment>
     );

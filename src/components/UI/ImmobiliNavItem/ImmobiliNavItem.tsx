@@ -6,16 +6,18 @@ import {
     toggleOptionsVisibility,
     hideSidebar,
 } from "../../../store/header-slice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Fragment } from "react";
 
-type categoriaType = "tutti" | "residenziale" | "commerciale";
-type contrattoType = "tutti" | "vendita" | "affitto";
+type categoriaType = "Tutti" | "Residenziale" | "Commerciale";
+type contrattoType = "Tutti" | "Vendita" | "Affitto";
 
 const ImmobiliNavItem: React.FC<{ type: "header" | "sidebar" }> = (props) => {
     const isOptionsVisible = useSelector(
         (state: RootState) => state.header.optionsVisibility
     );
+
+    const location = useLocation();
 
     const dispatch = useDispatch();
 
@@ -39,7 +41,11 @@ const ImmobiliNavItem: React.FC<{ type: "header" | "sidebar" }> = (props) => {
     return (
         <Fragment>
             <div
-                className={`${styles[classImmobileNavItem]}`}
+                className={`${styles[classImmobileNavItem]} ${
+                    location.pathname.startsWith("/immobili")
+                        ? styles.active
+                        : ""
+                }`}
                 onClick={optionsVisibilityToggler}
             >
                 Immobili
@@ -55,31 +61,38 @@ const ImmobiliNavItem: React.FC<{ type: "header" | "sidebar" }> = (props) => {
                 <div className={styles.options}>
                     <div
                         onClick={() =>
-                            navigateToFilteredHouses("tutti", "residenziale")
+                            navigateToFilteredHouses("Tutti", "Tutti")
                         }
                     >
-                        Residenziali
+                        Tutti gli Immobili
                     </div>
                     <div
                         onClick={() =>
-                            navigateToFilteredHouses("tutti", "commerciale")
+                            navigateToFilteredHouses("Tutti", "Residenziale")
                         }
                     >
-                        Commerciali
+                        Solo Residenziali
                     </div>
                     <div
                         onClick={() =>
-                            navigateToFilteredHouses("vendita", "tutti")
+                            navigateToFilteredHouses("Tutti", "Commerciale")
                         }
                     >
-                        In Vendita
+                        Solo Commerciali
                     </div>
                     <div
                         onClick={() =>
-                            navigateToFilteredHouses("affitto", "tutti")
+                            navigateToFilteredHouses("Vendita", "Tutti")
                         }
                     >
-                        In Affitto
+                        Solo in Vendita
+                    </div>
+                    <div
+                        onClick={() =>
+                            navigateToFilteredHouses("Affitto", "Tutti")
+                        }
+                    >
+                        Solo in Affitto
                     </div>
                 </div>
             )}

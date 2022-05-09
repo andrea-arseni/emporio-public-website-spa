@@ -1,0 +1,53 @@
+.wrapper {
+    padding: 4px 10px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    flex-flow: column;
+    background-color: white;
+    position: relative;
+}
+
+.wrapper * {
+    width: 100%;
+}
+
+.wrapper label {
+    position: absolute;
+    font-size: small;
+    z-index: 20;
+}
+
+.wrapper select {
+    cursor: pointer;
+    z-index: 40;
+    padding-top: 20px;
+    font-size: medium;
+    font-weight: normal;
+    border: 1px solid transparent;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 900px) {
+    .wrapper select {
+        font-size: small;
+    }
+}
+
+@media screen and (max-width: 715px) {
+    .wrapper select {
+        font-size: large;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .wrapper select {
+        font-size: medium;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .wrapper select {
+        font-size: small;
+    }
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import styles from "./App.module.css";
 import CookiesBanner from "./components/CookiesBanner/CookiesBanner";
 import Footer from "./components/Footer/Footer";
@@ -14,12 +14,15 @@ import Immobili from "./pages/Immobili/Immobili";
 import NotFound from "./pages/NotFound/NotFound";
 import Privacy from "./pages/Privacy/Privacy";
 import Servizi from "./pages/Servizi/Servizi";
+import Servizio from "./pages/Servizio/Servizio";
+import Tv from "./pages/Tv/Tv";
 import { RootState } from "./store";
 import { hideOptions } from "./store/header-slice";
 
 const App: React.FC<{
     id: number;
 }> = (props) => {
+    const location = useLocation();
     const dispatch = useDispatch();
 
     const isOptionsVisible = useSelector(
@@ -37,16 +40,18 @@ const App: React.FC<{
         if (isOptionsVisible) dispatch(hideOptions());
     };
 
+    if (location.pathname === "/tv") return <Tv />;
+
     return (
         <div className={styles.app} onClick={hideOptionsOpened}>
             <Header />
-            {isSidebarVisible && <Sidebar />}
+            <Sidebar isVisible={isSidebarVisible} />
             <Routes>
                 <Route path="/" element={<Navigate to="/home" />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/emporio" element={<Emporio />} />
                 <Route path="/servizi" element={<Servizi />} />
-                <Route path="/servizi/:serviceName" element={<Home />} />
+                <Route path="/servizi/:serviceName" element={<Servizio />} />
                 <Route path="/immobili" element={<Immobili />} />
                 <Route path="/contatti" element={<Contatti />} />
                 <Route path="/privacy" element={<Privacy />} />
@@ -62,10 +67,11 @@ const App: React.FC<{
 export default App;
 
 /* 
-- privacy policy e cookie policy strings - @mediaquery
-- media altezza messaggio e form
-- 5 immagini serie
-- scritte emporio sopra
-- testing form
-- testing @media all pages
+- creazione lista - vinta
+- unione liste - vinta
+- aggiornamento lista fatto bene - vinta
+- testing tv - vinta 
+- static record in più mamma - vinto
+- git push
+- nested route
 */

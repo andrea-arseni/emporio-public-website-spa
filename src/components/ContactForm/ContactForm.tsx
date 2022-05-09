@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -8,13 +8,13 @@ import Modal from "../Modal/Modal";
 import Button from "../UI/Button/Button";
 import Input from "../UI/Input/Input";
 import Spinner from "../UI/Spinner/Spinner";
-import styles from "./Form.module.css";
+import styles from "./ContactForm.module.css";
+import { URL } from "../../env";
 
 const Form: React.FC<{
     isTextAreaVisible: boolean;
-    isLoading: boolean;
-    setIsLoading: (newState: boolean) => void;
-}> = (props) => {
+    ref?: React.Ref<any>;
+}> = React.forwardRef((props, ref) => {
     let inputDomandaIsInvalid = undefined;
 
     const navigate = useNavigate();
@@ -64,6 +64,8 @@ const Form: React.FC<{
         const regexp = /\S+@\S+\.\S+/;
         return regexp.test(mail.toString());
     });
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const [privacyChecked, setPrivacyChecked] = useState(false);
 
@@ -129,15 +131,16 @@ const Form: React.FC<{
                 ? "Domanda Generica: " + inputDomandaRef.current!.value
                 : "Inviata Domanda ma non ha scritto niente";
         try {
-            props.setIsLoading(true);
+            setIsLoading(true);
             await axios.post(URL + "persone/private", reqBody);
-            props.setIsLoading(false);
+            setIsLoading(false);
             inputEmailReset();
             inputNameReset();
             inputTelefonoReset();
+            privacyCheckHandler();
             setFormCompleted(true);
         } catch (error: any) {
-            props.setIsLoading(false);
+            setIsLoading(false);
             if (error.response) {
                 setErrorMessage(error.response.data.message);
             } else {
@@ -147,9 +150,9 @@ const Form: React.FC<{
     };
 
     return (
-        <div className={`${styles.formWrapper} centered`}>
-            {props.isLoading && <Spinner type="white" />}
-            {!props.isLoading && (
+        <div className={`centered col-6 ${styles.formWrapper}`}>
+            {isLoading && <Spinner type="white" />}
+            {!isLoading && (
                 <form
                     className={`${styles.form} ${
                         props.isTextAreaVisible
@@ -164,7 +167,7 @@ const Form: React.FC<{
                         isInvalid={inputNameIsInvalid}
                         onChange={inputNameChangedHandler}
                         onBlur={inputNameTouchedHandler}
-                        invalidMessage="Il nome è obbligatorio e deve avere almeno 5 caratteri"
+                        invalidMessage="almeno 5 caratteri"
                         ref={inputNameRef}
                     >
                         Nome e Cognome
@@ -176,7 +179,7 @@ const Form: React.FC<{
                         isInvalid={inputTelefonoIsInvalid}
                         onChange={inputTelefonoChangedHandler}
                         onBlur={inputTelefonoTouchedHandler}
-                        invalidMessage="Il numero è obbligatorio e deve avere almeno 9 cifre"
+                        invalidMessage="almeno 9 cifre"
                         ref={inputTelefonoRef}
                     >
                         Numero di Telefono
@@ -188,7 +191,7 @@ const Form: React.FC<{
                         isInvalid={inputEmailIsInvalid}
                         onChange={inputEmailChangedHandler}
                         onBlur={inputEmailTouchedHandler}
-                        invalidMessage="Email mancante oppure non valida"
+                        invalidMessage="mancante o invalida"
                         ref={inputEmailRef}
                     >
                         Indirizzo Email
@@ -223,16 +226,16 @@ const Form: React.FC<{
                             <Link to="/privacy"> qui</Link>
                         </p>
                     </div>
-
                     <Button
                         color="blue"
                         onClick={submitForm}
-                        disabled={isFormInvalid || props.isLoading}
+                        disabled={isFormInvalid}
                     >
                         {!isServiceRoute && !props.isTextAreaVisible
                             ? "Richiedi Valutazione Gratuita"
                             : "Invia"}
                     </Button>
+                    <div ref={ref}></div>
                 </form>
             )}
             {formCompleted &&
@@ -251,7 +254,10 @@ const Form: React.FC<{
                             {
                                 message: "Torna alla Home",
                                 color: "blue",
-                                action: () => navigate("/home"),
+                                action: () =>
+                                    isServiceRoute
+                                        ? navigate("/home")
+                                        : setFormCompleted(false),
                             },
                             {
                                 message: "Vai agli Immobili",
@@ -284,6 +290,6 @@ const Form: React.FC<{
                 )}
         </div>
     );
-};
+});
 
 export default Form;

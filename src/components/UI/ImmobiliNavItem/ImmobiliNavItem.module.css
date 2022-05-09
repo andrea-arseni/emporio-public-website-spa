@@ -36,6 +36,12 @@
     color: rgb(15, 100, 55);
 }
 
+.active,
+.immobileNavItem_header:hover,
+.immobileNavItem_sidebar:hover {
+    border-bottom: 2px solid green;
+}
+
 @media screen and (max-width: 720px) {
     .immobileNavItem_header {
         font-size: larger;

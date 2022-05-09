@@ -5,10 +5,10 @@ import styles from "./Contatti.module.css";
 const Contatti: React.FC = () => {
     return (
         <div className={`${styles.contatti} page row blue`}>
-            <div className="col-md-2">
+            <div className="col-6">
                 <Map />
             </div>
-            <div className="col-md-2">
+            <div className="col-6">
                 <Table />
             </div>
         </div>

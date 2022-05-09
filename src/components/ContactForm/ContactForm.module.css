@@ -1,17 +1,3 @@
-.form {
-    flex-flow: column;
-    justify-content: space-around;
-    border: 1px solid gray;
-    border-radius: 4px;
-    max-width: 500px;
-    z-index: 1000;
-    background: linear-gradient(
-        to left,
-        rgb(251, 249, 245),
-        rgb(251, 251, 241)
-    );
-}
-
 .form * {
     width: 80%;
 }
@@ -20,8 +6,20 @@
     margin-top: 10px;
 }
 
+.form {
+    border-radius: 4px;
+    background: linear-gradient(
+        to left,
+        rgb(251, 249, 245),
+        rgb(251, 251, 241)
+    );
+    z-index: 9999;
+    flex-flow: column;
+    justify-content: space-around;
+}
+
 .formValutazione {
-    height: 70%;
+    min-height: 70%;
     padding: 30px;
 }
 
@@ -30,7 +28,7 @@
 }
 
 .formDomanda {
-    height: 86%;
+    min-height: 86%;
     padding: 15px 30px;
 }
 
@@ -54,4 +52,11 @@
 
 .privacyCheckButton {
     width: 8%;
+}
+
+@media screen and (max-width: 500px) {
+    .formDomanda,
+    .formValutazione {
+        padding: 10px;
+    }
 }

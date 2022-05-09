@@ -16,7 +16,7 @@
 .link {
     text-decoration: none;
     color: rgb(36, 107, 240);
-    padding-right: 4%;
+    margin: 0 4px;
 }
 
 .link:hover {

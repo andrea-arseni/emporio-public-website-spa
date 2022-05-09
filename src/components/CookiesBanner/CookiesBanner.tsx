@@ -17,8 +17,8 @@ const CookiesBanner: React.FC<{}> = () => {
                 <br /> Utilizziamo solo cookie tecnici, non cookie di parti
                 terze per inviare messaggi promozionali. <br />
                 Chiudendo questo banner, scorrendo questa pagina o cliccando
-                qualunque suo elemento acconsenti all'uso dei cookie. Per avere
-                ulteriori informazioni{" "}
+                qualunque suo elemento acconsenti all'uso dei cookie.
+                <br /> Per avere ulteriori informazioni{" "}
                 <Link to="/cookies" onClick={hideBannerHandler}>
                     clicca qui
                 </Link>

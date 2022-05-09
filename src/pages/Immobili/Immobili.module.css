@@ -1,0 +1,36 @@
+.filterButtonArea {
+    width: 100%;
+    display: none;
+}
+
+.filterFormWrapper {
+    width: 100%;
+    margin: 12px 0px;
+    height: 400px;
+}
+
+.filterFormWrapper * {
+    max-width: 400px;
+}
+
+.housePart {
+    height: 100%;
+    flex-flow: column;
+}
+
+@media screen and (max-width: 800px) {
+    .filterButtonArea {
+        display: block;
+    }
+    .wideScreenOnly {
+        display: none;
+    }
+    .immobili::-webkit-scrollbar {
+        width: 10px;
+        height: 0;
+        border: 1px solid lightgray;
+    }
+    .immobili::-webkit-scrollbar-thumb {
+        background: linear-gradient(white, beige);
+    }
+}

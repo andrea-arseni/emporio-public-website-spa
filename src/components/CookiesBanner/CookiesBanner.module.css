@@ -18,23 +18,17 @@
 .x {
     font-size: xx-large;
     font-weight: bold;
-    color: white;
     cursor: pointer;
-    padding: 20px;
-    border: 1px solid white;
+    padding: 10px 20px;
+    border: 1px solid rgb(86, 86, 86);
     border-radius: 6px;
-    background: linear-gradient(to right, rgb(86, 86, 86), rgb(114, 121, 132));
+    color: rgb(86, 86, 86);
     transition: all 0.6s;
 }
 
 .x:hover {
     transform: scale(1.1);
-}
-
-@media screen and (max-width: 1150px) {
-    .x {
-        font-size: larger;
-    }
+    color: black;
 }
 
 @media screen and (max-width: 800px) {
@@ -42,17 +36,22 @@
         font-size: small;
     }
     .x {
+        position: relative;
+        left: -8px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .x {
         font-size: medium;
+        position: relative;
+        left: -18px;
+        padding: 14px;
     }
 }
 
 @media screen and (max-width: 500px) {
     .banner {
         font-size: smaller;
-    }
-    .x {
-        font-size: small;
-        position: relative;
-        left: -18px;
     }
 }

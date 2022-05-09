@@ -11,6 +11,12 @@
     border: 1px solid gray;
 }
 
+.fillSpace {
+    width: 100%;
+    height: 100% !important;
+    box-sizing: border-box;
+}
+
 .disabled {
     border: 1px solid gray !important;
     background-color: rgb(231, 230, 230) !important;
@@ -55,7 +61,7 @@
 
 .blue_outline:hover {
     background-color: rgb(79, 147, 230);
-    color: rgb(54, 54, 54);
+    color: white;
 }
 
 .red {

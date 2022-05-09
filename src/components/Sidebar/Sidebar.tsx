@@ -5,14 +5,18 @@ import NavItem from "../UI/NavItem/NavItem";
 import ImmobiliNavItem from "../UI/ImmobiliNavItem/ImmobiliNavItem";
 import { Fragment } from "react";
 
-const Sidebar: React.FC<{}> = () => {
+const Sidebar: React.FC<{ isVisible: boolean }> = (props) => {
     const dispatch = useDispatch();
 
     const hideSidebarHandler = () => dispatch(hideSidebar());
 
     return (
         <Fragment>
-            <nav className={styles.sidebar}>
+            <nav
+                className={`${styles.sidebar} ${
+                    props.isVisible ? styles.opened : ""
+                }`}
+            >
                 <ul className={styles.list}>
                     <li onClick={hideSidebarHandler}>
                         <NavItem type="sidebar" name="emporio" />
@@ -28,7 +32,12 @@ const Sidebar: React.FC<{}> = () => {
                     </li>
                 </ul>
             </nav>
-            <div className={styles.backdrop} onClick={hideSidebarHandler}></div>
+            <div
+                className={`${styles.backdrop} ${
+                    props.isVisible ? styles.visible : ""
+                }`}
+                onClick={hideSidebarHandler}
+            ></div>
         </Fragment>
     );
 };

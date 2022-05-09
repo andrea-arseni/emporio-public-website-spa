@@ -5,7 +5,7 @@ body {
 }
 
 .blue {
-    background: linear-gradient(to left, rgb(213, 225, 242), rgb(94, 142, 223));
+    background: linear-gradient(to right, rgb(2, 52, 126), rgb(94, 142, 223));
     z-index: 0;
 }
 
@@ -13,6 +13,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.vertical {
+    flex-flow: column;
 }
 
 input:focus,
@@ -51,7 +55,7 @@ button:focus {
     text-decoration: underline;
 }
 
-.col-md-3 {
+.col-3 {
     float: left;
     box-sizing: border-box;
     padding: 20px;
@@ -60,29 +64,59 @@ button:focus {
     width: calc(25% - 10px);
 }
 
-.col-md-2 {
+.col-6 {
     float: left;
     box-sizing: border-box;
     padding: 20px;
     margin: 5px;
     width: calc(50% - 10px);
     height: 95%;
+    z-index: 9999;
+}
+
+.col-4 {
+    float: left;
+    box-sizing: border-box;
+    padding: 20px;
+    margin: 5px;
+    width: calc(40% - 10px);
+    height: 95%;
+    z-index: 9999;
+}
+
+.col-8 {
+    float: left;
+    box-sizing: border-box;
+    padding: 20px;
+    margin: 5px;
+    width: calc(60% - 10px);
+    height: 95%;
+    z-index: 9999;
+}
+
+.bordered {
+    border: 1px solid red;
 }
 
 @media screen and (max-width: 800px) {
-    .col-md-3 {
+    .col-3 {
         width: calc(33.3% - 10px);
+    }
+    .col-8 {
+        padding: 10px;
+        width: calc(100% - 10px);
+        height: auto;
     }
 }
 
 @media screen and (max-width: 650px) {
-    .col-md-3 {
+    .col-3 {
         width: calc(50% - 10px);
     }
 }
 
-@media screen and (max-width: 700px) {
-    .col-md-2 {
+@media screen and (max-width: 715px) {
+    .col-6 {
         padding: 10px;
         width: calc(100% - 10px);
         height: auto;
@@ -90,7 +124,7 @@ button:focus {
 }
 
 @media screen and (max-width: 500px) {
-    .col-md-3 {
+    .col-3 {
         width: calc(100% - 10px);
     }
 }

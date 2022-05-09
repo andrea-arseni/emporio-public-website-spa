@@ -1,5 +1,5 @@
 .backdrop {
-    width: calc(100vw - 210px);
+    width: 100vw;
     height: calc(100vh - 180px);
     padding: 0;
     margin: 0;
@@ -7,18 +7,10 @@
     top: 140px;
     right: 0;
     border: 1px solid transparent;
-    z-index: 100;
+    z-index: -1;
     background-color: rgba(0, 0, 0, 0.6);
-    animation: animation 0.4s linear;
-}
-
-@keyframes animation {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    opacity: 0;
+    transition: all 0.8s;
 }
 
 .sidebar {
@@ -26,11 +18,21 @@
     margin: 0;
     padding: 0;
     width: 210px;
+    left: -210px;
     height: calc(100vh - 180px);
     background-color: white;
     border: 1px solid transparent;
+    z-index: 200;
+    transition: all 0.8s;
+}
+
+.visible {
     z-index: 100;
-    animation: animation 0.4s linear;
+    opacity: 1;
+}
+
+.opened {
+    left: 0px;
 }
 
 .list {

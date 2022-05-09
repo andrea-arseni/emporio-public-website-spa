@@ -9,7 +9,9 @@
 }
 
 .active_header,
-.navLink_header:hover {
+.navLink_header:hover,
+.active_sidebar,
+.navLink_sidebar:hover {
     border-bottom: 2px solid green;
 }
 
@@ -18,11 +20,6 @@
     color: rgb(54, 54, 54);
     font-size: x-large;
     cursor: pointer;
-}
-
-.active_sidebar,
-.navLink_sidebar:hover {
-    color: green;
 }
 
 @media screen and (max-width: 720px) {

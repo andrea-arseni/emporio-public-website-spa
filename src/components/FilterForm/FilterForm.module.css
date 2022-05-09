@@ -1,0 +1,21 @@
+.formWrapper {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(
+        to left,
+        rgb(251, 249, 245),
+        rgb(251, 251, 241)
+    );
+}
+
+.form * {
+    width: 80%;
+}
+
+.form {
+    height: 95%;
+    width: 80%;
+    flex-flow: column;
+    justify-content: space-around;
+}

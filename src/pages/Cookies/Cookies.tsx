@@ -31,7 +31,7 @@ const Cookies: React.FC = () => {
             <ul>
                 <li>
                     <h3>COOKIE TECNICI</h3>
-                    <p>
+                    <div>
                         I cookie tecnici sono quelli utilizzati al solo fine di
                         “effettuare la trasmissione di una comunicazione su una
                         rete di comunicazione elettronica, o nella misura
@@ -82,7 +82,7 @@ const Cookies: React.FC = () => {
                                 </p>
                             </li>
                         </ul>{" "}
-                    </p>
+                    </div>
                 </li>
                 <li>
                     <h3>COOKIE DI PROFILAZIONE</h3>

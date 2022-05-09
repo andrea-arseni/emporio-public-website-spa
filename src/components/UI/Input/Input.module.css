@@ -42,3 +42,33 @@
     position: relative;
     left: -6px;
 }
+
+@media screen and (max-width: 900px) {
+    .inputWrapper input {
+        font-size: medium;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .inputWrapper input {
+        font-size: small;
+    }
+}
+
+@media screen and (max-width: 715px) {
+    .inputWrapper input {
+        font-size: large;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .inputWrapper input {
+        font-size: medium;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .inputWrapper input {
+        font-size: small;
+    }
+}

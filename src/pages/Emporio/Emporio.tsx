@@ -5,7 +5,7 @@ import imagePremio from "../../assets/eccellenza.png";
 
 const Emporio: React.FC = () => {
     return (
-        <div className={`page ${styles.emporioPage}`}>
+        <div className={`page blue`}>
             <section className={`centered ${styles.emporio}`}>
                 <div className={styles.text}>
                     <h2>Chi Siamo</h2>
