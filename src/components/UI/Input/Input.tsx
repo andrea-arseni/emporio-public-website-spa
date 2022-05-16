@@ -5,7 +5,7 @@ type inputType = "text" | "number" | "email" | "textarea";
 
 const Input: React.FC<{
     type: inputType;
-    id: string;
+    id?: string;
     value: string;
     isInvalid?: boolean;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -13,6 +13,7 @@ const Input: React.FC<{
     invalidMessage?: string;
     ref: React.Ref<any>;
     rows?: number;
+    readOnly?: boolean;
 }> = React.forwardRef((props, ref: React.Ref<any>) => {
     return (
         <Fragment>
@@ -27,6 +28,7 @@ const Input: React.FC<{
                 </label>
                 {props.type !== "textarea" && (
                     <input
+                        readOnly={props.readOnly}
                         ref={ref}
                         type={props.type}
                         id={props.id}
@@ -37,6 +39,7 @@ const Input: React.FC<{
                 )}
                 {props.type === "textarea" && (
                     <textarea
+                        value={props.value}
                         id={props.id}
                         rows={props.rows ? props.rows : 4}
                         ref={ref}

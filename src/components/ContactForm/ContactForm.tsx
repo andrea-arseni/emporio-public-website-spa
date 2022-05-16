@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useCallback, useRef, useState } from "react";
+import React, { Fragment, useCallback, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -10,9 +10,13 @@ import Input from "../UI/Input/Input";
 import Spinner from "../UI/Spinner/Spinner";
 import styles from "./ContactForm.module.css";
 import { URL } from "../../env";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+
+type FormType = "domanda" | "valutazione-gratuita" | "servizio" | "immobile";
 
 const Form: React.FC<{
-    isTextAreaVisible: boolean;
+    isTextAreaVisible?: boolean;
     ref?: React.Ref<any>;
 }> = React.forwardRef((props, ref) => {
     let inputDomandaIsInvalid = undefined;
@@ -20,8 +24,22 @@ const Form: React.FC<{
     const navigate = useNavigate();
     const location = useLocation();
     const locationParts = location.pathname.split("/");
-    const isServiceRoute = location.pathname.includes("servizi");
+
+    let formType: FormType = "valutazione-gratuita";
+    if (props.isTextAreaVisible) {
+        formType = "domanda";
+    } else if (location.pathname.includes("servizio")) {
+        formType = "servizio";
+    } else if (location.pathname.includes("immobili")) {
+        formType = "immobile";
+    }
+
     const key = locationParts.pop();
+
+    let refImmobile = useSelector(
+        (state: RootState) =>
+            state.houses.houses.find((el) => el.id.toString() === key)?.ref
+    );
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -89,7 +107,7 @@ const Form: React.FC<{
         inputEmailIsInvalid ||
         inputTelefonoIsInvalid ||
         !privacyChecked ||
-        (props.isTextAreaVisible && inputDomandaIsInvalid);
+        (formType === "domanda" && inputDomandaIsInvalid);
 
     const focusOnWrongInput = () => {
         if (inputNameValue.trim() === "" || inputNameIsInvalid) {
@@ -124,12 +142,16 @@ const Form: React.FC<{
             email: inputEmailRef.current!.value,
             note: "Richiesta Valutazione Gratuita",
         };
-        if (isServiceRoute) {
-            reqBody.note = key!.replace("-", " ");
-        } else if (props.isTextAreaVisible)
+        if (formType === "domanda") {
             reqBody.note = inputDomandaRef.current!.value
                 ? "Domanda Generica: " + inputDomandaRef.current!.value
                 : "Inviata Domanda ma non ha scritto niente";
+        } else if (formType === "servizio") {
+            reqBody.note = key!.replace("-", " ");
+        } else if (formType === "immobile") {
+            reqBody.note = `Contatto per immobile con ref. ${refImmobile}`;
+        }
+
         try {
             setIsLoading(true);
             await axios.post(URL + "persone/private", reqBody);
@@ -150,16 +172,21 @@ const Form: React.FC<{
     };
 
     return (
-        <div className={`centered col-6 ${styles.formWrapper}`}>
+        <Fragment>
             {isLoading && <Spinner type="white" />}
             {!isLoading && (
                 <form
                     className={`${styles.form} ${
-                        props.isTextAreaVisible
+                        formType === "domanda"
                             ? styles.formDomanda
                             : styles.formValutazione
                     } centered`}
                 >
+                    {refImmobile && (
+                        <h3 className={styles.title}>
+                            Ti interessa? Contattaci
+                        </h3>
+                    )}
                     <Input
                         type="text"
                         id="nome"
@@ -196,7 +223,7 @@ const Form: React.FC<{
                     >
                         Indirizzo Email
                     </Input>
-                    {props.isTextAreaVisible && !isServiceRoute && (
+                    {formType === "domanda" && (
                         <Input
                             type="textarea"
                             id="domanda"
@@ -231,9 +258,13 @@ const Form: React.FC<{
                         onClick={submitForm}
                         disabled={isFormInvalid}
                     >
-                        {!isServiceRoute && !props.isTextAreaVisible
-                            ? "Richiedi Valutazione Gratuita"
-                            : "Invia"}
+                        {formType === "domanda" && "Invia la domanda"}
+                        {formType === "valutazione-gratuita" &&
+                            "Richiedi la valutazione gratuita"}
+                        {formType === "servizio" &&
+                            "Richiedi assistenza per il servizio"}
+                        {formType === "immobile" &&
+                            "Richiedi visita per l'immobile"}
                     </Button>
                     <div ref={ref}></div>
                 </form>
@@ -244,7 +275,7 @@ const Form: React.FC<{
                         header="Ottimo!"
                         text={[
                             `Abbiamo ricevuto la tua richiesta ${
-                                !isServiceRoute && !props.isTextAreaVisible
+                                formType === "valutazione-gratuita"
                                     ? `di valutazione gratuita`
                                     : ``
                             }!`,
@@ -255,7 +286,8 @@ const Form: React.FC<{
                                 message: "Torna alla Home",
                                 color: "blue",
                                 action: () =>
-                                    isServiceRoute
+                                    formType === "immobile" ||
+                                    formType === "servizio"
                                         ? navigate("/home")
                                         : setFormCompleted(false),
                             },
@@ -288,7 +320,7 @@ const Form: React.FC<{
                     />,
                     document.querySelector("body")!
                 )}
-        </div>
+        </Fragment>
     );
 });
 

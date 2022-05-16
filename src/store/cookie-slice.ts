@@ -13,6 +13,7 @@ const cookieSlice = createSlice({
     initialState,
     reducers: {
         hideBanner(state) {
+            document.cookie = "cookieBannerClicked=true; expires=0; path=/";
             state.bannerVisible = false;
         },
     },

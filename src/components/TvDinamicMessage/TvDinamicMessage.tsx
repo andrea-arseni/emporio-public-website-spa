@@ -18,7 +18,7 @@ const TvDinamicMessage: React.FC<{
             <img
                 className={`${styles.imageTv} ${styles.absolute}`}
                 alt="Immagine non disponibile"
-                src={props.house.immagine}
+                src={props.house.files[0].base64}
             />
             <div
                 className={`vertical ${styles.absolute} ${styles.textWrapper}`}

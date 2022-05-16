@@ -16,6 +16,7 @@
     z-index: 9999;
     flex-flow: column;
     justify-content: space-around;
+    border: 1px solid gray;
 }
 
 .formValutazione {
@@ -52,6 +53,12 @@
 
 .privacyCheckButton {
     width: 8%;
+}
+
+.title {
+    color: rgb(52, 52, 52);
+    font-weight: normal;
+    text-align: center;
 }
 
 @media screen and (max-width: 500px) {

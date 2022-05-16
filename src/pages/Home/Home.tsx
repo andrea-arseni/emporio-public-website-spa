@@ -50,10 +50,12 @@ const Home: React.FC<{}> = () => {
                 <div className="col-6 centered">
                     <TextMessage>{defaultMessage}</TextMessage>
                 </div>
-                <ContactForm
-                    ref={formElement}
-                    isTextAreaVisible={isFormWithTextArea}
-                />
+                <div className="col-6 centered">
+                    <ContactForm
+                        ref={formElement}
+                        isTextAreaVisible={isFormWithTextArea}
+                    />
+                </div>
             </div>
             <ImagesBackdrop />
         </Fragment>

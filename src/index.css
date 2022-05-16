@@ -4,6 +4,11 @@ body {
     font-family: "Lato", sans-serif;
 }
 
+.gray {
+    background: linear-gradient(rgb(255, 255, 255), rgb(233, 234, 237));
+    z-index: 0;
+}
+
 .blue {
     background: linear-gradient(to right, rgb(2, 52, 126), rgb(94, 142, 223));
     z-index: 0;

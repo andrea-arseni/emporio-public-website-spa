@@ -4,6 +4,10 @@ export const stringifyNumber = (input: number) => {
     let counter = 0;
     for (let i = numberAsString.length - 1; i >= 0; i--) {
         counter++;
+        if (numberAsString[i] === ".") {
+            invertedString = invertedString + ",";
+            continue;
+        }
         invertedString = invertedString + numberAsString[i];
         if (counter % 3 === 0 && i !== 0) invertedString = invertedString + ".";
     }

@@ -10,6 +10,7 @@ import Contatti from "./pages/Contatti/Contatti";
 import Cookies from "./pages/Cookies/Cookies";
 import Emporio from "./pages/Emporio/Emporio";
 import Home from "./pages/Home/Home";
+import Immobile from "./pages/Immobile/Immobile";
 import Immobili from "./pages/Immobili/Immobili";
 import NotFound from "./pages/NotFound/NotFound";
 import Privacy from "./pages/Privacy/Privacy";
@@ -18,12 +19,27 @@ import Servizio from "./pages/Servizio/Servizio";
 import Tv from "./pages/Tv/Tv";
 import { RootState } from "./store";
 import { hideOptions } from "./store/header-slice";
+import { hideBanner } from "./store/cookie-slice";
 
 const App: React.FC<{
     id: number;
 }> = (props) => {
+    const getCookie = (cname: string) => {
+        var name = cname + "=";
+        var ca = document.cookie.split(";");
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == " ") c = c.substring(1);
+            if (c.indexOf(name) != -1)
+                return c.substring(name.length, c.length);
+        }
+        return "";
+    };
+
     const location = useLocation();
     const dispatch = useDispatch();
+
+    if (getCookie("cookieBannerClicked") === "true") dispatch(hideBanner());
 
     const isOptionsVisible = useSelector(
         (state: RootState) => state.header.optionsVisibility
@@ -53,6 +69,7 @@ const App: React.FC<{
                 <Route path="/servizi" element={<Servizi />} />
                 <Route path="/servizi/:serviceName" element={<Servizio />} />
                 <Route path="/immobili" element={<Immobili />} />
+                <Route path="/immobili/:immobileId" element={<Immobile />} />
                 <Route path="/contatti" element={<Contatti />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/cookies" element={<Cookies />} />
@@ -67,11 +84,18 @@ const App: React.FC<{
 export default App;
 
 /* 
-- creazione lista - vinta
-- unione liste - vinta
-- aggiornamento lista fatto bene - vinta
-- testing tv - vinta 
-- static record in più mamma - vinto
-- git push
-- nested route
+- Bug Immobili - vinto
+- Position fixed per il form - vinto
+- Descrizione - vinto
+- Caratteristiche principali come simboli - ref - prezzo - superficie - locali - vinto
+- No freccia sulle principali - vinto
+- Completamento caratteristiche - vinto
+- Immagine dimensione - vinto
+- Funzionamento freccette
+- Memorizzazione altre immagini
+- not found page
+- select safari bug
+- Testing @media
+- testing testing testing 
+- push * fine sito statico
 */

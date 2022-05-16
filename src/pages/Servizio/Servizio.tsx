@@ -32,7 +32,9 @@ const Servizio: React.FC<{}> = () => {
                         {serviceMessage}
                     </TextMessage>
                 </div>
-                <ContactForm isTextAreaVisible={false} />
+                <div className="col-6 centered">
+                    <ContactForm />
+                </div>
             </div>
         </Fragment>
     );

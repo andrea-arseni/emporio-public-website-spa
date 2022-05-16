@@ -7,19 +7,23 @@ import HouseCards from "../../components/HouseCards/HouseCards";
 import PaginationBar from "../../components/PaginationBar/PaginationBar";
 import Button from "../../components/UI/Button/Button";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import { useDispatch } from "react-redux";
+import { addHouses } from "../../store/houses-slice";
 import { URL } from "../../env";
-import House from "../../types/House";
 import styles from "./Immobili.module.css";
+import House from "../../types/House";
 
 const buildQueryParam = (
     searchParams: URLSearchParams,
     object: string,
     queryParams: string
 ) => {
-    return searchParams.get(object)
-        ? `${
-              queryParams === "" ? "?" : queryParams + "&"
-          }${object}=${searchParams.get(object)}`
+    return searchParams.get(object) ||
+        object === "contratto" ||
+        object === "categoria"
+        ? `${queryParams === "" ? "?" : queryParams + "&"}${object}=${
+              searchParams.get(object) ? searchParams.get(object) : "Tutti"
+          }`
         : queryParams;
 };
 
@@ -33,6 +37,10 @@ const buildQueryParams = (searchParams: URLSearchParams) => {
 };
 
 const Immobili: React.FC = () => {
+    const dispatch = useDispatch();
+
+    const [houses, setHouses] = useState<House[]>([]);
+
     const [filterFormOpened, setFilterFormOpened] = useState(false);
 
     const filterFormToggler = () =>
@@ -43,8 +51,6 @@ const Immobili: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [errorMessage, setErrorMessage] = useState("");
-
-    const [houses, setHouses] = useState<House[]>([]);
 
     const [numberOfResults, setNumberOfResults] = useState(0);
 
@@ -57,6 +63,7 @@ const Immobili: React.FC = () => {
                     URL + "immobili" + queryParams + "&sort=prezzo-desc"
                 );
                 setNumberOfResults(res.data.numberOfResults);
+                dispatch(addHouses(res.data.data));
                 setHouses(res.data.data);
                 setIsLoading(false);
             } catch (e: any) {
@@ -71,7 +78,7 @@ const Immobili: React.FC = () => {
         };
 
         fetchImmobili();
-    }, [searchParams]);
+    }, [searchParams, dispatch]);
 
     if (errorMessage)
         return <div className="page blue centered">{errorMessage}</div>;

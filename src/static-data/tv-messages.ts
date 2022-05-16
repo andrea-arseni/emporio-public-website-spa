@@ -30,7 +30,7 @@ export const tvMessages: tvMessage[] = [
     },
     {
         image: attivitaImage,
-        title: "Hai bisogno di vendere la tua attività professionale?",
+        title: "Hai bisogno di vendere la tua attività?",
         message:
             "Con noi puoi farlo vedendo riconosciuto il tuo impegno professionale",
     },

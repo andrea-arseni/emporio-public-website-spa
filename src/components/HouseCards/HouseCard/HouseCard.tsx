@@ -11,18 +11,34 @@ import Spinner from "../../UI/Spinner/Spinner";
 import axios from "axios";
 import { URL } from "../../../env";
 import House from "../../../types/House";
+import { useDispatch, useSelector } from "react-redux";
+import { addImage } from "../../../store/houses-slice";
+import { RootState } from "../../../store";
 
 const HouseCard: React.FC<{
     house: House;
 }> = (props) => {
+    const houseFile = useSelector((state: RootState) => {
+        const house = state.houses.houses.find(
+            (el) => el.id === props.house.id
+        );
+        return house && house.files[0] && house.files[0].base64
+            ? house.files[0].base64
+            : null;
+    });
+
+    const dispatch = useDispatch();
+
     const navigate = useNavigate();
 
     const navigateToDedicatedHousePage = () =>
         navigate("/immobili/" + props.house.id);
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(!!!houseFile);
 
-    const [imageString, setImageString] = useState(notAvailable);
+    const [imageString, setImageString] = useState(
+        houseFile ? houseFile : notAvailable
+    );
 
     useEffect(() => {
         const fetchImage = async () => {
@@ -30,7 +46,14 @@ const HouseCard: React.FC<{
                 const res = await axios.get(
                     `${URL}immobili/${props.house.id}/files/${props.house.files[0].id}`
                 );
-                setImageString("data:image/png;base64," + res.data.byteArray);
+                const immagine = "data:image/png;base64," + res.data.byteArray;
+                setImageString(immagine);
+                dispatch(
+                    addImage({
+                        id: props.house.id,
+                        file: { ...props.house.files[0], base64: immagine },
+                    })
+                );
                 setIsLoading(false);
             } catch (e: any) {
                 setIsLoading(false);
@@ -42,12 +65,12 @@ const HouseCard: React.FC<{
             }
         };
 
-        if (props.house.files.length === 0) {
+        if (props.house.files.length === 0 || houseFile) {
             setIsLoading(false);
         } else {
             fetchImage();
         }
-    }, [props.house.id, props.house.files]);
+    }, [props.house.id, props.house.files, dispatch, houseFile]);
 
     return (
         <div
@@ -74,8 +97,7 @@ const HouseCard: React.FC<{
                 <span>
                     {" "}
                     <SquareMetersIcon className={styles.icon} />{" "}
-                    {props.house.superficie} m
-                    <sup className={styles.sup}>2</sup>{" "}
+                    {props.house.superficie} m²
                     {window.innerWidth > 500 && "di superficie"}
                 </span>
                 <span>

@@ -3,6 +3,7 @@ type File = {
     id: number;
     nome: string;
     tipologia: string;
+    base64?: string;
 };
 
 export default File;

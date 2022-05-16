@@ -1,9 +1,10 @@
+import Caratteristiche from "./Caratteristiche";
 import File from "./File";
 
 type House = {
-    caratteristicheImmobile: null;
+    caratteristicheImmobile: Caratteristiche;
     categoria: "commerciale" | "residenziale";
-    classeEnergetica: "A" | "B" | "C" | "D" | "E" | "F" | "G";
+    classeEnergetica: "A" | "B" | "C" | "D" | "E" | "F" | "G" | "ESENTE";
     comune: string;
     consumo: number;
     contratto: "vendita" | "affitto";
@@ -22,7 +23,6 @@ type House = {
     titolo: string;
     zona: string;
     files: File[];
-    immagine?: string;
 };
 
 export default House;

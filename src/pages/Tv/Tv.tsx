@@ -43,7 +43,7 @@ const Tv: React.FC<{}> = () => {
                     const res = await axios.get(
                         `${URL}immobili/${immobile.id}/files/${immobile.files[0].id}`
                     );
-                    immobile.immagine =
+                    immobile.files[0].base64 =
                         "data:image/png;base64," + res.data.byteArray;
                 }
                 const immobiliResidenziali = immobili.filter(
