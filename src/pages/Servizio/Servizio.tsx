@@ -1,10 +1,24 @@
 import { services } from "../../static-data/services";
 import ContactForm from "../../components/ContactForm/ContactForm";
 import TextMessage from "../../components/TextMessage/TextMessage";
-import { Fragment } from "react";
+import { Fragment, useRef, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import Button from "../../components/UI/Button/Button";
+import styles from "./Servizio.module.css";
 
 const Servizio: React.FC<{}> = () => {
+    const formElement = useRef<HTMLInputElement>(null);
+
+    const [isFormWithTextArea, setIsFormWithTextArea] = useState(false);
+
+    const changeFormHandler = () => {
+        setIsFormWithTextArea((prevState) => !prevState);
+        formElement.current!.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    };
+
     const location = useLocation();
 
     const key = location.pathname.split("/").pop();
@@ -30,10 +44,20 @@ const Servizio: React.FC<{}> = () => {
                     <TextMessage>
                         {serviceTitle}
                         {serviceMessage}
+                        <div className={styles.buttons}>
+                            <Button color="blue" onClick={changeFormHandler}>
+                                {isFormWithTextArea
+                                    ? "Togli la nota"
+                                    : "Aggiungi una nota"}
+                            </Button>
+                        </div>
                     </TextMessage>
                 </div>
                 <div className="col-6 centered">
-                    <ContactForm />
+                    <ContactForm
+                        ref={formElement}
+                        isTextAreaVisible={isFormWithTextArea}
+                    />
                 </div>
             </div>
         </Fragment>

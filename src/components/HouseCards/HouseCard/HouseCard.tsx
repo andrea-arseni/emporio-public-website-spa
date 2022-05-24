@@ -57,11 +57,6 @@ const HouseCard: React.FC<{
                 setIsLoading(false);
             } catch (e: any) {
                 setIsLoading(false);
-                if (e.response) {
-                    console.log(e.response.data.message);
-                } else {
-                    console.log(e);
-                }
             }
         };
 

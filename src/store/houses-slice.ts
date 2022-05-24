@@ -19,7 +19,8 @@ const houseSlice = createSlice({
                 const alreadyThere = state.houses.find(
                     (el) => el.id === newHouse.id
                 );
-                if (!alreadyThere) state.houses.push(newHouse);
+                if (!alreadyThere)
+                    state.houses.push({ ...newHouse, fileFetched: false });
             });
         },
         addImage(state, action: PayloadAction<{ id: number; file: File }>) {
@@ -45,8 +46,29 @@ const houseSlice = createSlice({
             state.houses[houseIndex].caratteristicheImmobile =
                 action.payload.caratteristiche;
         },
+        addFiles(state, action: PayloadAction<{ id: number; files: File[] }>) {
+            let files =
+                action.payload.files.length > 1
+                    ? action.payload.files.slice(1)
+                    : [];
+            const houseIndex = state.houses.findIndex(
+                (el) => el.id === action.payload.id
+            );
+            if (houseIndex === -1) throw new Error("Casa non trovata");
+            state.houses[houseIndex].files.forEach((originalEl) => {
+                files = files.filter((el) => {
+                    return el.id !== originalEl.id;
+                });
+            });
+            state.houses[houseIndex].files = [
+                ...state.houses[houseIndex].files,
+                ...files,
+            ];
+            state.houses[houseIndex].fileFetched = true;
+        },
     },
 });
 
-export const { addHouses, addImage, addCaratteristiche } = houseSlice.actions;
+export const { addHouses, addImage, addCaratteristiche, addFiles } =
+    houseSlice.actions;
 export default houseSlice.reducer;

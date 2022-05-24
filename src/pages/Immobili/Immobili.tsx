@@ -12,6 +12,8 @@ import { addHouses } from "../../store/houses-slice";
 import { URL } from "../../env";
 import styles from "./Immobili.module.css";
 import House from "../../types/House";
+import ErrorPage from "../Error/Error";
+import NoHouses from "../../components/NoHouses/NoHouses";
 
 const buildQueryParam = (
     searchParams: URLSearchParams,
@@ -71,7 +73,6 @@ const Immobili: React.FC = () => {
                 if (e.response) {
                     setErrorMessage(e.response.data.message);
                 } else {
-                    console.log(e);
                     setErrorMessage("Errore sconosciuto, operazione fallita");
                 }
             }
@@ -80,12 +81,11 @@ const Immobili: React.FC = () => {
         fetchImmobili();
     }, [searchParams, dispatch]);
 
-    if (errorMessage)
-        return <div className="page blue centered">{errorMessage}</div>;
+    if (errorMessage) return <ErrorPage message={errorMessage} />;
 
     const houseContent = () => {
         if (isLoading) return <Spinner type="white" />;
-        if (houses.length === 0) return <div>No houses</div>;
+        if (houses.length === 0) return <NoHouses />;
         return (
             <Fragment>
                 <HouseCards listOfHouses={houses} />

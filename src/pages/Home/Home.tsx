@@ -36,9 +36,7 @@ const Home: React.FC<{}> = () => {
             </p>
             <div className={styles.buttons}>
                 <Button color="blue" onClick={changeFormHandler}>
-                    {isFormWithTextArea
-                        ? "Torna come prima"
-                        : "Vorrei Fare una Domanda"}
+                    {isFormWithTextArea ? "Togli la nota" : "Aggiungi una nota"}
                 </Button>
             </div>
         </Fragment>

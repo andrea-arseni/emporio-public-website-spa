@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { URL } from "../../env";
-import { ReactComponent as ArrowIcon } from "../../assets/icons/left-arrow.svg";
 import {
-    addImage,
+    addFiles,
     addCaratteristiche,
     addHouses,
 } from "../../store/houses-slice";
@@ -20,6 +19,8 @@ import FeaturesWrapper from "../../components/FeaturesWrapper/FeaturesWrapper";
 import { ReactComponent as EuroIcon } from "../../assets/icons/euro.svg";
 import { ReactComponent as SquareMetersIcon } from "../../assets/icons/planimetry.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/home.svg";
+import HousePhoto from "../../components/HousePhoto/HousePhoto";
+import ErrorPage from "../Error/Error";
 
 type FeatureField = {
     value: string;
@@ -38,63 +39,51 @@ const Immobile: React.FC<{}> = () => {
         state.houses.houses.find((el) => el.id === id)
     );
 
-    const isHousePresent = !!house;
-
     const [isLoading, setIsLoading] = useState(true);
 
     const [errorMessage, setErrorMessage] = useState("");
+
+    const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
     useEffect(() => {
         const fetchImmobile = async () => {
             try {
                 const res = await axios.get(URL + "immobili/" + id);
-                if (!isHousePresent) {
+                if (!house) {
                     dispatch(addHouses([res.data]));
-                    const image = await axios.get(
-                        URL +
-                            "immobili/" +
-                            id +
-                            "/files/" +
-                            res.data.files[0].id
-                    );
+                    return;
+                }
+                if (house && !house.caratteristicheImmobile)
                     dispatch(
-                        addImage({
+                        addCaratteristiche({
                             id,
-                            file: {
-                                ...res.data.files[0],
-                                base64:
-                                    "data:image/png;base64," +
-                                    image.data.byteArray,
-                            },
+                            caratteristiche: res.data.caratteristicheImmobile,
                         })
                     );
-                }
-                dispatch(
-                    addCaratteristiche({
-                        id,
-                        caratteristiche: res.data.caratteristicheImmobile,
-                    })
-                );
+                if (house && !house.fileFetched)
+                    dispatch(addFiles({ id, files: res.data.files }));
                 setIsLoading(false);
             } catch (e: any) {
-                console.log(e);
                 setIsLoading(false);
-                if (e.response) {
+                if (e.response && e.response.data.message.includes("trovato")) {
                     setErrorMessage(e.response.data.message);
                 } else {
-                    console.log(e);
-                    setErrorMessage("Errore sconosciuto, operazione fallita");
+                    setErrorMessage(
+                        "Errore nella richiesta, operazione fallita"
+                    );
                 }
             }
         };
 
         fetchImmobile();
-    }, [dispatch, id, isHousePresent]);
+    }, [dispatch, id, house]);
 
     const [filterFormOpened, setFilterFormOpened] = useState(false);
 
     const filterFormToggler = () =>
         setFilterFormOpened((prevState) => !prevState);
+
+    if (errorMessage) return <ErrorPage message={errorMessage} />;
 
     const isSpecified = (valore: string) =>
         valore &&
@@ -435,18 +424,36 @@ const Immobile: React.FC<{}> = () => {
             });
     }
 
+    const testoACapo = (text: string) => {
+        const res = text.split("\n");
+        return (
+            <div>
+                {res.map((el, index) =>
+                    el ? (
+                        <span key={el}>{el}</span>
+                    ) : (
+                        <div key={index}>
+                            <br />
+                        </div>
+                    )
+                )}
+            </div>
+        );
+    };
+
     const elaborateDescrizione = (descrizione: string) => {
-        if (!descrizione || !descrizione.includes("href")) return descrizione;
+        if (!descrizione) return "";
+        if (!descrizione.includes("href")) return testoACapo(descrizione);
         const link = descrizione.split("href='")[1].split("'")[0];
         const primaParte = descrizione.split("<a")[0];
         const secondaParte = descrizione.split("</a>")[1];
         return (
             <div>
-                {primaParte}
+                {testoACapo(primaParte)}
                 <a href={link} rel="noreferrer" target={"_blank"}>
                     {link}
                 </a>
-                {secondaParte}
+                {testoACapo(secondaParte)}
             </div>
         );
     };
@@ -495,29 +502,11 @@ const Immobile: React.FC<{}> = () => {
                                 </div>
                             </div>
                         )}
-                        {house?.files[0].base64 && (
-                            <div className={styles.imageWrapper}>
-                                <img
-                                    src={house?.files[0].base64}
-                                    alt="Immagine non disponibile"
-                                />
-                                <div className={`${styles.arrowLeft} centered`}>
-                                    <ArrowIcon />
-                                </div>
-                                <div
-                                    className={`${styles.arrowRight} centered`}
-                                >
-                                    <ArrowIcon />
-                                </div>
-                            </div>
-                        )}
-                        {(!house || !house.files[0].base64) && (
-                            <div
-                                className={`${styles.spinnerWrapper} centered`}
-                            >
-                                <Spinner type="blue" />
-                            </div>
-                        )}
+
+                        <HousePhoto
+                            currentIndex={currentPhotoIndex}
+                            onChangeIndex={setCurrentPhotoIndex}
+                        />
                         {house && (
                             <FeaturesWrapper title="Caratteristiche Principali">
                                 {caratteristiche.principali.map((el) => (

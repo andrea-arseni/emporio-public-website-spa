@@ -18,26 +18,30 @@ const PaginationBar: React.FC<{
 
     return (
         <div className={`${styles.paginationBar} centered`}>
-            <div
-                className={styles.arrow}
-                onClick={changePageHandler.bind(null, -1)}
-            >
-                {Number.parseInt(props.currentPage) === 1 ? "" : <ArrowIcon />}
-            </div>
+            {Number.parseInt(props.currentPage) !== 1 && (
+                <div
+                    className={styles.arrow}
+                    onClick={changePageHandler.bind(null, -1)}
+                >
+                    <ArrowIcon />
+                </div>
+            )}
+            {Number.parseInt(props.currentPage) === 1 && <div></div>}
             <div>
                 {props.numberOfResults} risultati - Pagina {props.currentPage}{" "}
                 di {numberOfPages}
             </div>
-            <div
-                className={`${styles.arrow} ${styles.right}`}
-                onClick={changePageHandler.bind(null, +1)}
-            >
-                {Number.parseInt(props.currentPage) === numberOfPages ? (
-                    ""
-                ) : (
+            {Number.parseInt(props.currentPage) !== numberOfPages && (
+                <div
+                    className={`${styles.arrow} ${styles.right}`}
+                    onClick={changePageHandler.bind(null, +1)}
+                >
                     <ArrowIcon />
-                )}
-            </div>
+                </div>
+            )}
+            {Number.parseInt(props.currentPage) === numberOfPages && (
+                <div></div>
+            )}
         </div>
     );
 };

@@ -4,6 +4,8 @@ import { stringifyNumber } from "../../utils/numberHandler";
 import Button from "../UI/Button/Button";
 import styles from "./FilterForm.module.css";
 import Select from "../UI/Select/Select";
+import ReactDOM from "react-dom";
+import Modal from "../Modal/Modal";
 
 const generatePriceList = () => {
     const priceList: { value: number; name: string }[] = [];
@@ -15,24 +17,35 @@ const generatePriceList = () => {
     return priceList;
 };
 
-const retrieveInitialIndex = (
-    searchParamName: string,
-    searchParams: URLSearchParams,
-    priceList: { value: number; name: string }[],
-    defaultValue: number
-) =>
-    searchParams.get(searchParamName)
-        ? priceList.findIndex(
-              (el) => el.value.toString() === searchParams.get(searchParamName)
-          )
-        : defaultValue;
-
 const FilterForm: React.FC<{
     setSearchParams: (obj: any) => void;
     searchParams: URLSearchParams;
     setFilterFormOpened?: any;
 }> = (props) => {
     const priceList: { value: number; name: string }[] = generatePriceList();
+
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const retrieveInitialIndex = (
+        searchParamName: string,
+        searchParams: URLSearchParams,
+        priceList: { value: number; name: string }[],
+        defaultValue: number
+    ) => {
+        if (!searchParams.get(searchParamName)) return defaultValue;
+        const index = priceList.findIndex(
+            (el) => el.value.toString() === searchParams.get(searchParamName)
+        );
+        if (index === -1 && !errorMessage) {
+            setErrorMessage(
+                `Parametro di ricerca ${
+                    searchParamName === "priceMin" ? `"priceMin"` : `"priceMax"`
+                } non corretto. Usare il form per evitare errori.`
+            );
+            return defaultValue;
+        }
+        return index;
+    };
 
     const [minPriceIndex, setMinPriceIndex] = useState(
         retrieveInitialIndex("priceMin", props.searchParams, priceList, 0)
@@ -53,7 +66,7 @@ const FilterForm: React.FC<{
         selectFormHandler();
         const newMinValue = event.target.value;
         const newMinValueIndex = priceList.findIndex(
-            (el) => el.value == newMinValue
+            (el) => el.value.toString() === newMinValue
         );
         setMinPriceIndex(newMinValueIndex);
     };
@@ -62,7 +75,7 @@ const FilterForm: React.FC<{
         selectFormHandler();
         const newMaxValue = event.target.value;
         const newMaxValueIndex = priceList.findIndex(
-            (el) => el.value == newMaxValue
+            (el) => el.value.toString() === newMaxValue
         );
         setMaxPriceIndex(newMaxValueIndex);
     };
@@ -72,7 +85,6 @@ const FilterForm: React.FC<{
 
     const handleReCaptchaVerify = useCallback(async () => {
         if (!executeRecaptcha) {
-            console.log("Execute recaptcha not yet available");
             return;
         }
         await executeRecaptcha();
@@ -99,55 +111,80 @@ const FilterForm: React.FC<{
 
     return (
         <div className={`centered ${styles.formWrapper}`}>
-            <form className={`${styles.form} centered`}>
-                <Select
-                    onChange={selectFormHandler}
-                    labelName="Contratto"
-                    options={[
-                        { name: "Tutti", value: "Tutti" },
-                        { name: "Vendita", value: "Vendita" },
-                        { name: "Affitto", value: "Affitto" },
-                    ]}
-                    defaulValue={props.searchParams.get("contratto")}
-                    ref={inputContrattoRef}
-                />
-                <Select
-                    onChange={selectFormHandler}
-                    labelName="Categoria"
-                    options={[
-                        { name: "Tutti", value: "Tutti" },
-                        { name: "Residenziale", value: "Residenziale" },
-                        { name: "Commerciale", value: "Commerciale" },
-                    ]}
-                    defaulValue={props.searchParams.get("categoria")!}
-                    ref={inputCategoriaRef}
-                />
-                <Select
-                    onChange={minPriceHandler}
-                    labelName="Prezzo Minimo"
-                    options={priceList.filter(
-                        (el, index) => index < maxPriceIndex
-                    )}
-                    defaulValue={priceList[minPriceIndex].value}
-                    ref={inputPriceMinRef}
-                />
-                <Select
-                    onChange={maxPriceHandler}
-                    labelName="Prezzo Massimo"
-                    options={priceList.filter(
-                        (el, index) => index > minPriceIndex
-                    )}
-                    defaulValue={priceList[maxPriceIndex].value}
-                    ref={inputPriceMaxRef}
-                />
-                <Button
-                    color="blue"
-                    disabled={!isFormUsed}
-                    onClick={submitForm}
-                >
-                    Filtra Immobili
-                </Button>
-            </form>
+            {!errorMessage && (
+                <form className={`${styles.form} centered`}>
+                    <Select
+                        onChange={selectFormHandler}
+                        labelName="Contratto"
+                        options={[
+                            { name: "Tutti", value: "Tutti" },
+                            { name: "Vendita", value: "Vendita" },
+                            { name: "Affitto", value: "Affitto" },
+                        ]}
+                        defaulValue={props.searchParams.get("contratto")}
+                        ref={inputContrattoRef}
+                    />
+                    <Select
+                        onChange={selectFormHandler}
+                        labelName="Categoria"
+                        options={[
+                            { name: "Tutti", value: "Tutti" },
+                            { name: "Residenziale", value: "Residenziale" },
+                            { name: "Commerciale", value: "Commerciale" },
+                        ]}
+                        defaulValue={props.searchParams.get("categoria")!}
+                        ref={inputCategoriaRef}
+                    />
+                    <Select
+                        onChange={minPriceHandler}
+                        labelName="Prezzo Minimo"
+                        options={priceList.filter(
+                            (el, index) => index < maxPriceIndex
+                        )}
+                        defaulValue={priceList[minPriceIndex].value}
+                        ref={inputPriceMinRef}
+                    />
+                    <Select
+                        onChange={maxPriceHandler}
+                        labelName="Prezzo Massimo"
+                        options={priceList.filter(
+                            (el, index) => index > minPriceIndex
+                        )}
+                        defaulValue={priceList[maxPriceIndex].value}
+                        ref={inputPriceMaxRef}
+                    />
+                    <Button
+                        color="blue"
+                        disabled={!isFormUsed}
+                        onClick={submitForm}
+                    >
+                        Filtra Immobili
+                    </Button>
+                </form>
+            )}
+            {errorMessage &&
+                ReactDOM.createPortal(
+                    <Modal
+                        header="Attenzione!"
+                        text={[errorMessage]}
+                        buttons={[
+                            {
+                                message: "Chiudi",
+                                color: "red",
+                                action: () => {
+                                    setErrorMessage("");
+                                    props.setSearchParams({
+                                        contratto: "Tutti",
+                                        categoria: "Tutti",
+                                        priceMin: 0,
+                                        priceMax: 10000000,
+                                    });
+                                },
+                            },
+                        ]}
+                    />,
+                    document.querySelector("body")!
+                )}
         </div>
     );
 };

@@ -8,7 +8,7 @@ const Table: React.FC<{}> = () => {
             <td>
                 <a className="link" href={`tel:${el.telefono}`}>
                     {window.innerWidth > 900 ||
-                    (window.innerWidth < 700 && window.innerWidth > 600)
+                    (window.innerWidth < 715 && window.innerWidth > 600)
                         ? el.telefono
                         : "Chiama"}
                 </a>
@@ -16,7 +16,7 @@ const Table: React.FC<{}> = () => {
             <td>
                 <a className="link" href={`mailto:${el.email}`}>
                     {window.innerWidth > 1100 ||
-                    (window.innerWidth < 700 && window.innerWidth > 600)
+                    (window.innerWidth < 715 && window.innerWidth > 600)
                         ? el.email
                         : "Email"}
                 </a>

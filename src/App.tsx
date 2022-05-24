@@ -21,16 +21,14 @@ import { RootState } from "./store";
 import { hideOptions } from "./store/header-slice";
 import { hideBanner } from "./store/cookie-slice";
 
-const App: React.FC<{
-    id: number;
-}> = (props) => {
+const App: React.FC<{}> = () => {
     const getCookie = (cname: string) => {
         var name = cname + "=";
         var ca = document.cookie.split(";");
         for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
-            while (c.charAt(0) == " ") c = c.substring(1);
-            if (c.indexOf(name) != -1)
+            while (c.charAt(0) === " ") c = c.substring(1);
+            if (c.indexOf(name) !== -1)
                 return c.substring(name.length, c.length);
         }
         return "";
@@ -83,19 +81,9 @@ const App: React.FC<{
 
 export default App;
 
-/* 
-- Bug Immobili - vinto
-- Position fixed per il form - vinto
-- Descrizione - vinto
-- Caratteristiche principali come simboli - ref - prezzo - superficie - locali - vinto
-- No freccia sulle principali - vinto
-- Completamento caratteristiche - vinto
-- Immagine dimensione - vinto
-- Funzionamento freccette
-- Memorizzazione altre immagini
-- not found page
-- select safari bug
-- Testing @media
-- testing testing testing 
+/*  
+- validazione numero di telefono come da backend
+- un giro su safari
+- un giro su edge
 - push * fine sito statico
 */

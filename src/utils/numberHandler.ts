@@ -17,3 +17,7 @@ export const stringifyNumber = (input: number) => {
     }
     return output;
 };
+
+export const cleanPhoneNumber = (input: string | number) => {
+    return input.toString().trim().replaceAll(" ", "").replaceAll("/", "");
+};

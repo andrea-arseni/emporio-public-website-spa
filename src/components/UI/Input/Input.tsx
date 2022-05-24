@@ -6,9 +6,9 @@ type inputType = "text" | "number" | "email" | "textarea";
 const Input: React.FC<{
     type: inputType;
     id?: string;
-    value: string;
+    value?: string;
     isInvalid?: boolean;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (event: any) => void;
     onBlur?: () => void;
     invalidMessage?: string;
     ref: React.Ref<any>;
@@ -43,6 +43,7 @@ const Input: React.FC<{
                         id={props.id}
                         rows={props.rows ? props.rows : 4}
                         ref={ref}
+                        onChange={props.onChange}
                     ></textarea>
                 )}
             </div>

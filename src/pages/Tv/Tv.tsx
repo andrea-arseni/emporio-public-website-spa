@@ -57,14 +57,7 @@ const Tv: React.FC<{}> = () => {
                     ...immobiliCommerciali,
                 ]);
                 setListOfItems((prevList) => [...prevList, ...updatedList]);
-            } catch (e: any) {
-                console.log(e);
-                if (e.response) {
-                    console.log(e.response);
-                } else {
-                    console.log(e);
-                }
-            }
+            } catch (e: any) {}
         };
 
         fetchImmobili();
