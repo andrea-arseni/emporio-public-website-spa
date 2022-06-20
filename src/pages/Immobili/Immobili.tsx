@@ -61,14 +61,17 @@ const Immobili: React.FC = () => {
             const queryParams = buildQueryParams(searchParams);
             try {
                 setIsLoading(true);
-                const res = await axios.get(
-                    URL + "immobili" + queryParams + "&sort=prezzo-desc"
-                );
+                const url =
+                    URL + "immobili" + queryParams + "&sort=prezzo-desc";
+                console.log(url);
+                const res = await axios.get(url);
+                console.log(res);
                 setNumberOfResults(res.data.numberOfResults);
                 dispatch(addHouses(res.data.data));
                 setHouses(res.data.data);
                 setIsLoading(false);
             } catch (e: any) {
+                console.log(e);
                 setIsLoading(false);
                 if (e.response) {
                     setErrorMessage(e.response.data.message);
