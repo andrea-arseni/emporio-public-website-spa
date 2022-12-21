@@ -10,7 +10,7 @@
     z-index: -1;
     background-color: rgba(0, 0, 0, 0.6);
     opacity: 0;
-    transition: all 0.8s;
+    transition: all 0.4s;
 }
 
 .sidebar {
@@ -23,7 +23,7 @@
     background-color: white;
     border: 1px solid transparent;
     z-index: 200;
-    transition: all 0.8s;
+    transition: all 0.4s;
 }
 
 .visible {
@@ -41,10 +41,17 @@
     align-items: flex-start;
     justify-content: center;
     flex-flow: column;
+    padding: 0;
+    margin: 0;
 }
 
 .list li {
-    margin: 16px 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    font-size: small;
 }
 
 .navLink {

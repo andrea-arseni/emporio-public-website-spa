@@ -28,8 +28,14 @@ const PaginationBar: React.FC<{
             )}
             {Number.parseInt(props.currentPage) === 1 && <div></div>}
             <div>
-                {props.numberOfResults} risultati - Pagina {props.currentPage}{" "}
-                di {numberOfPages}
+                {`${props.numberOfResults} risultat${
+                    props.numberOfResults === 1 ? "o" : "i"
+                } ${
+                    props.numberOfResults > 0
+                        ? `- Pagina ${props.currentPage} 
+                di ${numberOfPages}`
+                        : ""
+                }`}
             </div>
             {Number.parseInt(props.currentPage) !== numberOfPages && (
                 <div

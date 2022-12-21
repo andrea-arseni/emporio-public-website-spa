@@ -12,14 +12,13 @@
 }
 
 .fillSpace {
-    width: 100%;
+    width: 100% !important;
     height: 100% !important;
-    box-sizing: border-box;
 }
 
 .disabled {
     border: 1px solid gray !important;
-    background-color: rgb(231, 230, 230) !important;
+    background-color: rgb(124, 170, 226) !important;
     color: gray !important;
     cursor: not-allowed !important;
 }

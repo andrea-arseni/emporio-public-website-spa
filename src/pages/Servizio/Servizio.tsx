@@ -1,23 +1,12 @@
 import { services } from "../../static-data/services";
 import ContactForm from "../../components/ContactForm/ContactForm";
-import TextMessage from "../../components/TextMessage/TextMessage";
-import { Fragment, useRef, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import Button from "../../components/UI/Button/Button";
 import styles from "./Servizio.module.css";
+import useWindowSize from "../../hooks/use-size";
+import Contattaci from "../Contattaci/Contattaci";
 
 const Servizio: React.FC<{}> = () => {
-    const formElement = useRef<HTMLInputElement>(null);
-
-    const [isFormWithTextArea, setIsFormWithTextArea] = useState(false);
-
-    const changeFormHandler = () => {
-        setIsFormWithTextArea((prevState) => !prevState);
-        formElement.current!.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
-    };
+    const [width] = useWindowSize();
 
     const location = useLocation();
 
@@ -29,7 +18,7 @@ const Servizio: React.FC<{}> = () => {
     const service = services.find((el) => el.name === key);
     try {
         serviceTitle = (
-            <h2 style={{ fontWeight: "normal" }}>{service!.title}</h2>
+            <h2 style={{ fontWeight: "lighter" }}>{service!.title}</h2>
         );
         const textArray = service!.message;
         serviceMessage = textArray.map((el, index) => <p key={index}>{el}</p>);
@@ -38,29 +27,32 @@ const Servizio: React.FC<{}> = () => {
     }
 
     return (
-        <Fragment>
-            <div className={`page row blue`}>
-                <div className="col-6 centered">
-                    <TextMessage>
-                        {serviceTitle}
-                        {serviceMessage}
-                        <div className={styles.buttons}>
-                            <Button color="blue" onClick={changeFormHandler}>
-                                {isFormWithTextArea
-                                    ? "Togli la nota"
-                                    : "Aggiungi una nota"}
-                            </Button>
+        <>
+            <div
+                className={`page container-fluid text-center fullHeight ${styles.container}`}
+            >
+                <img
+                    alt="Non disponibile"
+                    src={service?.image}
+                    className={`fullHeight fullWidth ${styles.image}`}
+                />
+                <div className={`row fullHeight ${styles.row}`}>
+                    <div className="col-md-6 centered">
+                        <div className={`vertical centered ${styles.dati} `}>
+                            {serviceTitle}
+                            <br />
+                            {serviceMessage}
                         </div>
-                    </TextMessage>
-                </div>
-                <div className="col-6 centered">
-                    <ContactForm
-                        ref={formElement}
-                        isTextAreaVisible={isFormWithTextArea}
-                    />
+                    </div>
+                    {width > 767 && (
+                        <div className={`col-md-6 fullHeight centered`}>
+                            <ContactForm />
+                        </div>
+                    )}
                 </div>
             </div>
-        </Fragment>
+            {width <= 767 && <Contattaci local />}
+        </>
     );
 };
 

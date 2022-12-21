@@ -1,11 +1,11 @@
-import React, { useCallback, useRef, useState } from "react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import React, { FormEvent, useRef, useState } from "react";
 import { stringifyNumber } from "../../utils/numberHandler";
 import Button from "../UI/Button/Button";
 import styles from "./FilterForm.module.css";
 import Select from "../UI/Select/Select";
 import ReactDOM from "react-dom";
 import Modal from "../Modal/Modal";
+import { useNavigate } from "react-router-dom";
 
 const generatePriceList = () => {
     const priceList: { value: number; name: string }[] = [];
@@ -20,8 +20,10 @@ const generatePriceList = () => {
 const FilterForm: React.FC<{
     setSearchParams: (obj: any) => void;
     searchParams: URLSearchParams;
-    setFilterFormOpened?: any;
+    fat?: boolean;
 }> = (props) => {
+    const navigate = useNavigate();
+
     const priceList: { value: number; name: string }[] = generatePriceList();
 
     const [errorMessage, setErrorMessage] = useState("");
@@ -81,15 +83,6 @@ const FilterForm: React.FC<{
     };
     const selectFormHandler = () => setIsFormUsed(true);
 
-    const { executeRecaptcha } = useGoogleReCaptcha();
-
-    const handleReCaptchaVerify = useCallback(async () => {
-        if (!executeRecaptcha) {
-            return;
-        }
-        await executeRecaptcha();
-    }, [executeRecaptcha]);
-
     const inputContrattoRef = useRef<HTMLSelectElement>(null);
     const inputCategoriaRef = useRef<HTMLSelectElement>(null);
     const inputPriceMinRef = useRef<HTMLSelectElement>(null);
@@ -98,21 +91,34 @@ const FilterForm: React.FC<{
     // setNewQueryParams
     const submitForm = async (event: React.FormEvent) => {
         event.preventDefault();
-        handleReCaptchaVerify();
         setIsFormUsed(false);
-        if (props.setFilterFormOpened) props.setFilterFormOpened(false);
         props.setSearchParams({
             contratto: inputContrattoRef.current!.value,
             categoria: inputCategoriaRef.current!.value,
             priceMin: inputPriceMinRef.current!.value,
             priceMax: inputPriceMaxRef.current!.value,
         });
+        if (props.fat)
+            navigate(
+                `/immobili?contratto=${
+                    inputContrattoRef.current!.value
+                }&categoria=${inputCategoriaRef.current!.value}&priceMin=${
+                    inputPriceMinRef.current!.value
+                }&priceMax=${inputPriceMaxRef.current!.value}`
+            );
     };
 
     return (
-        <div className={`centered ${styles.formWrapper}`}>
+        <div
+            className={`centered ${styles.formWrapper} ${
+                props.fat ? styles.fat : styles.slim
+            }`}
+        >
             {!errorMessage && (
                 <form className={`${styles.form} centered`}>
+                    <h4 style={{ fontWeight: "lighter" }}>
+                        Filtra gli Immobili
+                    </h4>
                     <Select
                         onChange={selectFormHandler}
                         labelName="Contratto"
@@ -139,7 +145,7 @@ const FilterForm: React.FC<{
                         onChange={minPriceHandler}
                         labelName="Prezzo Minimo"
                         options={priceList.filter(
-                            (el, index) => index < maxPriceIndex
+                            (_, index) => index < maxPriceIndex
                         )}
                         defaulValue={priceList[minPriceIndex].value}
                         ref={inputPriceMinRef}
@@ -148,18 +154,31 @@ const FilterForm: React.FC<{
                         onChange={maxPriceHandler}
                         labelName="Prezzo Massimo"
                         options={priceList.filter(
-                            (el, index) => index > minPriceIndex
+                            (_, index) => index > minPriceIndex
                         )}
                         defaulValue={priceList[maxPriceIndex].value}
                         ref={inputPriceMaxRef}
                     />
+                    <br />
                     <Button
                         color="blue"
                         disabled={!isFormUsed}
                         onClick={submitForm}
                     >
-                        Filtra Immobili
+                        Applica Filtro
                     </Button>
+                    {props.fat && <span style={{ height: "6px" }} />}
+                    {props.fat && (
+                        <Button
+                            color="blue_outline"
+                            onClick={(e: FormEvent) => {
+                                e.preventDefault();
+                                navigate(-1);
+                            }}
+                        >
+                            Indietro
+                        </Button>
+                    )}
                 </form>
             )}
             {errorMessage &&

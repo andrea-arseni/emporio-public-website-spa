@@ -23,7 +23,7 @@
 }
 
 .title {
-    font-size: calc(20vw - 100px);
+    font-size: calc(10vw);
     background: -webkit-linear-gradient(white, silver);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

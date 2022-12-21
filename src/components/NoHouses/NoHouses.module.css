@@ -4,6 +4,7 @@
 }
 
 .content {
+    padding: 20px;
     position: relative;
     width: 80%;
     height: 80%;
@@ -15,11 +16,15 @@
     overflow: hidden;
 }
 
+.buttons * {
+    margin: 6px;
+}
+
 .text {
     color: white;
     text-align: center;
     z-index: 90;
-    padding: 12px;
+    padding-top: 10px;
 }
 
 .backdrop {

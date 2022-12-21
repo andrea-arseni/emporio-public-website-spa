@@ -1,39 +1,14 @@
-.inputWrapper {
-    padding: 4px 10px;
-    border: 1px solid gray;
-    border-radius: 4px;
-    flex-flow: column;
-    background-color: white;
-}
-
-.inputWrapper * {
-    width: 100%;
-}
-
-.inputWrapper label {
-    font-size: small;
-}
-
-.inputWrapper input {
-    font-size: large;
-    border: 1px solid transparent;
-    width: 99%;
-}
-
-.inputWrapper textarea {
-    border: 1px solid transparent;
-    width: 95%;
-    resize: none;
-}
-
-.inputWrapper input:active {
-    border: 1px solid transparent;
+.formControl {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0;
 }
 
 .invalid {
-    border: 1px solid rgb(250, 165, 165);
-    box-shadow: 0 0 5px rgb(250, 165, 165);
     color: red;
+    font-size: small;
 }
 
 .errorMessage {
@@ -43,32 +18,7 @@
     left: -6px;
 }
 
-@media screen and (max-width: 900px) {
-    .inputWrapper input {
-        font-size: medium;
-    }
-}
-
-@media screen and (max-width: 800px) {
-    .inputWrapper input {
-        font-size: small;
-    }
-}
-
-@media screen and (max-width: 715px) {
-    .inputWrapper input {
-        font-size: large;
-    }
-}
-
-@media screen and (max-width: 550px) {
-    .inputWrapper input {
-        font-size: medium;
-    }
-}
-
-@media screen and (max-width: 400px) {
-    .inputWrapper input {
-        font-size: small;
-    }
+.label {
+    position: relative;
+    top: 14px;
 }

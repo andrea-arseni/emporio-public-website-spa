@@ -1,12 +1,23 @@
 .formWrapper {
-    width: 100%;
-    height: 100%;
     border-radius: 6px;
+    border: 1px solid gray;
     background: linear-gradient(
         to left,
-        rgb(251, 249, 245),
-        rgb(251, 251, 241)
+        rgb(239, 239, 239),
+        rgb(230, 230, 230)
     );
+    min-height: 420px;
+}
+
+.slim {
+    min-width: 250px;
+    width: 80%;
+    height: 420px;
+}
+
+.fat {
+    width: 100%;
+    height: 96%;
 }
 
 .form * {
@@ -14,8 +25,14 @@
 }
 
 .form {
-    height: 95%;
+    height: 80%;
     width: 80%;
     flex-flow: column;
     justify-content: space-around;
+}
+
+@media screen and (min-width: 1050px) {
+    .fat {
+        width: 80%;
+    }
 }

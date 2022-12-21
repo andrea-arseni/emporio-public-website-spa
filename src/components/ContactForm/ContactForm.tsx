@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { Fragment, useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -9,29 +9,52 @@ import Button from "../UI/Button/Button";
 import Input from "../UI/Input/Input";
 import Spinner from "../UI/Spinner/Spinner";
 import styles from "./ContactForm.module.css";
-import { URL } from "../../env";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { cleanPhoneNumber } from "../../utils/numberHandler";
+import useWindowSize from "../../hooks/use-size";
+import { color } from "../UI/Button/Button";
+import { capitalize } from "../../utils/stringHandler";
+import { URL } from "../../env";
 
-type FormType = "valutazione-gratuita" | "servizio" | "immobile";
-
-const Form: React.FC<{
-    isTextAreaVisible?: boolean;
-    ref?: React.Ref<any>;
-}> = React.forwardRef((props, ref) => {
+const ContactForm: React.FC<{
+    local?: boolean;
+    little?: boolean;
+}> = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const isImmobileQueryParamPresent = location.search.includes("immobileId");
+
+    const getIdImmobile = () => {
+        const queryParams = location.search.split("&");
+        return queryParams
+            .find((el) => el.includes("immobileId"))!
+            .split("=")[1];
+    };
+
+    const getNoteText = (
+        refImmobile: number | undefined,
+        key: string | undefined
+    ) => {
+        if (refImmobile)
+            return "Interessamento all'immobile con Ref. " + refImmobile;
+        if (location.pathname.includes("servizi")) {
+            return `Interessamento per servizio 
+                (${key
+                    ?.split("-")
+                    .map((el) => capitalize(el))
+                    .join(" ")})`;
+        }
+        return "Interessamento generico";
+    };
+
+    const [width] = useWindowSize();
+
     const locationParts = location.pathname.split("/");
-
-    let formType: FormType = "valutazione-gratuita";
-    if (location.pathname.includes("servizi")) {
-        formType = "servizio";
-    } else if (location.pathname.includes("immobili")) {
-        formType = "immobile";
-    }
-
-    const key = locationParts.pop();
+    const key = isImmobileQueryParamPresent
+        ? getIdImmobile()
+        : locationParts.pop();
 
     let refImmobile = useSelector(
         (state: RootState) =>
@@ -40,17 +63,9 @@ const Form: React.FC<{
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
-    const handleReCaptchaVerify = useCallback(async () => {
-        if (!executeRecaptcha) {
-            return;
-        }
-        await executeRecaptcha();
-    }, [executeRecaptcha]);
-
     const inputNameRef = useRef<HTMLInputElement>(null);
     const inputTelefonoRef = useRef<HTMLInputElement>(null);
     const inputEmailRef = useRef<HTMLInputElement>(null);
-    const inputDomandaRef = useRef<HTMLTextAreaElement>(null);
 
     const {
         inputValue: inputNameValue,
@@ -71,9 +86,10 @@ const Form: React.FC<{
         inputChangedHandler: inputTelefonoChangedHandler,
         reset: inputTelefonoReset,
     } = useInput((el) => {
+        if (!el || el.toString().trim().length === 0) return true;
         const res = cleanPhoneNumber(el);
         const cifre = res.toString().slice(1);
-        return res.toString().length > 9 && /^\d+$/.test(cifre);
+        return res.toString().length >= 9 && /^\d+$/.test(cifre);
     });
 
     const {
@@ -82,25 +98,20 @@ const Form: React.FC<{
         inputTouchedHandler: inputEmailTouchedHandler,
         inputChangedHandler: inputEmailChangedHandler,
         reset: inputEmailReset,
-    } = useInput((mail) => {
+    } = useInput((email) => {
+        if (!email || email.toString().trim().length === 0) return true;
         const regexp = /\S+@\S+\.\S+/;
-        return regexp.test(mail.toString());
+        return regexp.test(email.toString());
     });
 
-    const {
-        inputValue: inputNotesValue,
-        inputChangedHandler: inputNotesChangedHandler,
-        reset: inputNotesReset,
-    } = useInput(() => true);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [isLoading, setIsLoading] = useState(false);
-
-    const [privacyChecked, setPrivacyChecked] = useState(false);
+    const [privacyChecked, setPrivacyChecked] = useState<boolean>(false);
 
     const privacyCheckHandler = () =>
         setPrivacyChecked((prevState) => !prevState);
 
-    const [outlinePrivacy, setOutlinePrivacy] = useState(false);
+    const [outlinePrivacy, setOutlinePrivacy] = useState<boolean>(false);
 
     const outlinePrivacyHandler = () => {
         setOutlinePrivacy(true);
@@ -110,71 +121,53 @@ const Form: React.FC<{
     };
 
     const isFormInvalid =
-        inputNameValue.trim() === "" ||
-        inputTelefonoValue.trim() === "" ||
-        inputEmailValue.trim() === "" ||
+        (inputTelefonoValue.trim() === "" && inputEmailValue.trim() === "") ||
         inputNameIsInvalid ||
         inputEmailIsInvalid ||
-        inputTelefonoIsInvalid ||
-        !privacyChecked;
+        inputTelefonoIsInvalid;
 
-    const focusOnWrongInput = () => {
-        if (inputNameValue.trim() === "" || inputNameIsInvalid) {
-            inputNameRef.current!.focus();
-            return;
-        }
-        if (inputTelefonoValue.trim() === "" || inputTelefonoIsInvalid) {
-            inputTelefonoRef.current!.focus();
-            return;
-        }
-        if (inputEmailValue.trim() === "" || inputEmailIsInvalid) {
-            inputEmailRef.current!.focus();
-            return;
-        }
-        outlinePrivacyHandler();
-    };
+    const [formCompleted, setFormCompleted] = useState<boolean>(false);
 
-    const [formCompleted, setFormCompleted] = useState(false);
-
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
     const resetForm = () => {
         inputEmailReset();
         inputNameReset();
         inputTelefonoReset();
-        inputNotesReset();
     };
+
+    const setNullIfEmpty = (input: string) =>
+        input.trim().length === 0 ? null : input.trim();
 
     const submitForm = async (event: React.FormEvent) => {
         event.preventDefault();
-        handleReCaptchaVerify();
-        if (isFormInvalid) {
-            focusOnWrongInput();
+        if (isFormInvalid) return;
+
+        if (!privacyChecked) {
+            outlinePrivacyHandler();
             return;
         }
+
         const reqBody = {
             nome: inputNameRef.current!.value.trim(),
-            telefono: cleanPhoneNumber(inputTelefonoRef.current!.value),
-            email: inputEmailRef.current!.value.trim(),
-            note: "Richiesta Valutazione Gratuita",
+            telefono: setNullIfEmpty(
+                cleanPhoneNumber(inputTelefonoRef.current!.value)
+            ),
+            email: setNullIfEmpty(inputEmailRef.current!.value.trim()),
+            note: "Contatto generico",
         };
-        if (formType === "servizio") {
-            reqBody.note = key!.replace("-", " ");
-        } else if (formType === "immobile") {
-            reqBody.note = `Contatto per immobile con ref. ${refImmobile}`;
-        }
 
-        if (props.isTextAreaVisible) {
-            reqBody.note =
-                reqBody.note +
-                (inputDomandaRef.current!.value
-                    ? ": " + inputDomandaRef.current!.value
-                    : "");
-        }
+        reqBody.note = getNoteText(refImmobile, key);
+
+        const recaptchaToken = await executeRecaptcha!("login");
 
         try {
             setIsLoading(true);
-            await axios.post(URL + "persone/private", reqBody);
+            const headers = {
+                recaptchaToken,
+                "Content-Type": "application/json",
+            };
+            await axios.post(URL + "persone/private", reqBody, { headers });
             setIsLoading(false);
             resetForm();
             privacyCheckHandler();
@@ -189,21 +182,90 @@ const Form: React.FC<{
         }
     };
 
+    const errorModal = (
+        <Modal
+            local={props.local}
+            header="Oh no!"
+            text={[errorMessage]}
+            buttons={[
+                {
+                    message: "Riprova",
+                    color: "red",
+                    action: () => {
+                        setErrorMessage("");
+                        privacyCheckHandler();
+                    },
+                },
+                {
+                    message: "Ricomincia",
+                    color: "red_outline",
+                    action: () => {
+                        setErrorMessage("");
+                        resetForm();
+                        privacyCheckHandler();
+                    },
+                },
+            ]}
+        />
+    );
+
+    const successButtons: {
+        message: string;
+        color: color;
+        action: () => void;
+    }[] = refImmobile
+        ? [
+              {
+                  message: "Chiudi",
+                  color: "blue",
+                  action: () => {
+                      resetForm();
+                      setFormCompleted(false);
+                  },
+              },
+          ]
+        : [
+              {
+                  message: width > 720 ? "Vai alla Home" : "Home",
+                  color: "blue",
+                  action: () => navigate("/"),
+              },
+              {
+                  message: width > 720 ? "Vai agli Immobili" : "Immobili",
+                  color: "blue_outline",
+                  action: () => navigate("/immobili"),
+              },
+          ];
+
+    const successModal = (
+        <Modal
+            local={props.local}
+            header="Ottimo!"
+            text={[
+                `Abbiamo ricevuto la tua richiesta!`,
+                `Ti ricontatteremo al più presto`,
+            ]}
+            buttons={successButtons}
+        />
+    );
+
     return (
-        <Fragment>
-            {isLoading && <Spinner type="white" />}
+        <div className={styles.frame}>
+            {isLoading && (
+                <div className="fullHeight fullWidth centered">
+                    <Spinner type="blue" />
+                </div>
+            )}
             {!isLoading && (
                 <form
                     className={`${styles.form} ${
-                        props.isTextAreaVisible
-                            ? styles.formDomanda
-                            : styles.formValutazione
-                    } centered`}
+                        props.little ? styles.little : styles.big
+                    }  centered`}
                 >
                     {refImmobile && (
-                        <h3 className={styles.title}>
-                            Ti interessa? Contattaci
-                        </h3>
+                        <h5 className={styles.title}>
+                            Ti interessa? <br /> Contattaci
+                        </h5>
                     )}
                     <Input
                         type="text"
@@ -212,7 +274,13 @@ const Form: React.FC<{
                         isInvalid={inputNameIsInvalid}
                         onChange={inputNameChangedHandler}
                         onBlur={inputNameTouchedHandler}
-                        invalidMessage="tra 5 e 20 caratteri"
+                        invalidMessage={
+                            inputNameValue.toString().trim().length === 0
+                                ? "Obbligatorio"
+                                : inputNameValue.toString().trim().length < 5
+                                ? "Troppo Corto"
+                                : "Troppo Lungo"
+                        }
                         ref={inputNameRef}
                     >
                         Nome e Cognome
@@ -224,7 +292,7 @@ const Form: React.FC<{
                         isInvalid={inputTelefonoIsInvalid}
                         onChange={inputTelefonoChangedHandler}
                         onBlur={inputTelefonoTouchedHandler}
-                        invalidMessage="formato invalido (almeno 9 cifre)"
+                        invalidMessage="formato invalido"
                         ref={inputTelefonoRef}
                     >
                         Numero di Telefono
@@ -236,41 +304,36 @@ const Form: React.FC<{
                         isInvalid={inputEmailIsInvalid}
                         onChange={inputEmailChangedHandler}
                         onBlur={inputEmailTouchedHandler}
-                        invalidMessage="mancante o invalida"
+                        invalidMessage="formato invalido"
                         ref={inputEmailRef}
                     >
                         Indirizzo Email
                     </Input>
-                    {props.isTextAreaVisible && (
-                        <Input
-                            value={inputNotesValue}
-                            onChange={inputNotesChangedHandler}
-                            type="textarea"
-                            id="domanda"
-                            ref={inputDomandaRef}
-                        >
-                            La tua nota
-                        </Input>
-                    )}
-                    <div className={styles.privacySection}>
-                        <input
-                            className={styles.privacyCheckButton}
-                            type="checkbox"
-                            id="privacy"
-                            onChange={privacyCheckHandler}
-                        />
-                        <p
-                            className={
-                                outlinePrivacy
-                                    ? styles.evidence
-                                    : styles.notEvidence
-                            }
-                        >
-                            <span style={{ fontSize: "bold" }}>Privacy:</span>{" "}
-                            Autorizzo al trattamento dei dati sopra riportati in
-                            conformità al D.Lgs. 196/2003. Maggiori info{" "}
-                            <Link to="/privacy"> qui</Link>
-                        </p>
+                    <div
+                        className={`centered ${styles.privacySection} ${
+                            outlinePrivacy
+                                ? styles.evidence
+                                : styles.notEvidence
+                        }`}
+                    >
+                        <div className={styles.privacyButtonArea}>
+                            <input
+                                className={`${styles.privacyCheckButton} form-check-input`}
+                                type="checkbox"
+                                id="privacy"
+                                onChange={privacyCheckHandler}
+                            />
+                        </div>
+                        <div className={styles.privacyTextArea}>
+                            <p>
+                                <span style={{ fontSize: "bold" }}>
+                                    Privacy:
+                                </span>{" "}
+                                Autorizzo al trattamento dei dati sopra
+                                riportati in conformità al D.Lgs. 196/2003.
+                                Maggiori info <Link to="/privacy"> qui</Link>
+                            </p>
+                        </div>
                     </div>
                     <Button
                         color="blue"
@@ -279,61 +342,24 @@ const Form: React.FC<{
                     >
                         Invia
                     </Button>
-                    <div ref={ref}></div>
                 </form>
             )}
+            {formCompleted && props.local && successModal}
             {formCompleted &&
+                !props.local &&
                 ReactDOM.createPortal(
-                    <Modal
-                        header="Ottimo!"
-                        text={[
-                            `Abbiamo ricevuto la tua richiesta ${
-                                formType === "valutazione-gratuita"
-                                    ? `di valutazione gratuita`
-                                    : ``
-                            }!`,
-                            `Ti ricontatteremo al più presto`,
-                        ]}
-                        buttons={[
-                            {
-                                message: "Indietro",
-                                color: "blue",
-                                action: () => setFormCompleted(false),
-                            },
-                            {
-                                message: "Vai agli Immobili",
-                                color: "blue_outline",
-                                action: () => navigate("/immobili"),
-                            },
-                        ]}
-                    />,
+                    successModal,
                     document.querySelector("body")!
                 )}
+            {errorMessage && props.local && errorModal}
             {errorMessage &&
+                !props.local &&
                 ReactDOM.createPortal(
-                    <Modal
-                        header="Oh no!"
-                        text={[errorMessage]}
-                        buttons={[
-                            {
-                                message: "Riprova",
-                                color: "red",
-                                action: () => {
-                                    setErrorMessage("");
-                                    privacyCheckHandler();
-                                },
-                            },
-                            {
-                                message: "Vai agli Immobili",
-                                color: "red_outline",
-                                action: () => navigate("/immobili"),
-                            },
-                        ]}
-                    />,
+                    errorModal,
                     document.querySelector("body")!
                 )}
-        </Fragment>
+        </div>
     );
-});
+};
 
-export default Form;
+export default ContactForm;

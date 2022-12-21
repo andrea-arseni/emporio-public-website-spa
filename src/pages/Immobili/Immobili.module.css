@@ -1,6 +1,13 @@
-.filterButtonArea {
+.immobili {
+    background: linear-gradient(
+        to left,
+        rgb(251, 251, 251),
+        rgb(232, 232, 232)
+    );
+}
+
+.filterButton {
     width: 100%;
-    display: none;
 }
 
 .filterFormWrapper {
@@ -9,28 +16,20 @@
     height: 400px;
 }
 
+.row {
+    height: calc(100% - 46px);
+}
+
 .filterFormWrapper * {
     max-width: 400px;
 }
 
 .housePart {
-    height: 97%;
     flex-flow: column;
 }
 
-@media screen and (max-width: 800px) {
-    .filterButtonArea {
-        display: block;
-    }
-    .wideScreenOnly {
-        display: none;
-    }
-    .immobili::-webkit-scrollbar {
-        width: 10px;
-        height: 0;
-        border: 1px solid lightgray;
-    }
-    .immobili::-webkit-scrollbar-thumb {
-        background: linear-gradient(white, beige);
+@media screen and (max-width: 767px) {
+    .housePart {
+        padding-bottom: 36px;
     }
 }

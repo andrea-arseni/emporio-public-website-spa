@@ -1,10 +1,12 @@
 .wrapper {
-    height: 88%;
+    height: 100%;
     width: 100%;
     overflow: scroll;
 }
 
 .houseList {
+    margin-top: 30px;
+    margin-bottom: 15px;
     flex-flow: column;
     display: flex;
     align-items: center;
@@ -12,13 +14,13 @@
 }
 
 .wrapper::-webkit-scrollbar {
-    width: 10px;
+    width: 4px;
     height: 0;
     border: 1px solid lightgray;
 }
 
 .wrapper::-webkit-scrollbar-thumb {
-    background: linear-gradient(white, beige);
+    background: linear-gradient(rgb(0, 0, 0), green);
 }
 
 @media screen and (max-width: 800px) {

@@ -13,6 +13,10 @@ type categoriaType = "Tutti" | "Residenziale" | "Commerciale";
 type contrattoType = "Tutti" | "Vendita" | "Affitto";
 
 const ImmobiliNavItem: React.FC<{ type: "header" | "sidebar" }> = (props) => {
+    const navClass = `immobileNavItem_${props.type}`;
+    const activeClass = `active_${props.type}`;
+    const optionsClass = `options_${props.type}`;
+
     const isOptionsVisible = useSelector(
         (state: RootState) => state.header.optionsVisibility
     );
@@ -36,18 +40,19 @@ const ImmobiliNavItem: React.FC<{ type: "header" | "sidebar" }> = (props) => {
         navigate(`/immobili?contratto=${contratto}&categoria=${categoria}`);
     };
 
-    const classImmobileNavItem = `immobileNavItem_${props.type}`;
-
     return (
         <Fragment>
             <div
-                className={`${styles[classImmobileNavItem]} ${
-                    location.pathname.startsWith("/immobili")
-                        ? styles.active
-                        : ""
+                className={`${styles[navClass]} ${
+                    !location.pathname.startsWith("/immobili")
+                        ? ""
+                        : styles[activeClass]
                 }`}
                 onClick={optionsVisibilityToggler}
             >
+                {props.type === "sidebar" && (
+                    <i className="bi bi-houses rightSpace"></i>
+                )}
                 Immobili
                 <CaretDown
                     className={styles.caret}
@@ -58,7 +63,7 @@ const ImmobiliNavItem: React.FC<{ type: "header" | "sidebar" }> = (props) => {
                 />
             </div>
             {isOptionsVisible && (
-                <div className={styles.options}>
+                <div className={`${styles.options} ${styles[optionsClass]}`}>
                     <div
                         onClick={() =>
                             navigateToFilteredHouses("Tutti", "Tutti")

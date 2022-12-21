@@ -1,9 +1,7 @@
 import styles from "./HouseCard.module.css";
 import notAvailable from "../../../assets/notAvailable.png";
 import { stringifyNumber } from "../../../utils/numberHandler";
-import { ReactComponent as EuroIcon } from "../../../assets/icons/euro.svg";
 import { ReactComponent as SquareMetersIcon } from "../../../assets/icons/planimetry.svg";
-import { ReactComponent as HomeIcon } from "../../../assets/icons/home.svg";
 import { ReactComponent as TownIcon } from "../../../assets/icons/building.svg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -14,6 +12,8 @@ import House from "../../../types/House";
 import { useDispatch, useSelector } from "react-redux";
 import { addImage } from "../../../store/houses-slice";
 import { RootState } from "../../../store";
+import { capitalize, correctZona } from "../../../utils/stringHandler";
+import File from "../../../types/File";
 
 const HouseCard: React.FC<{
     house: House;
@@ -41,17 +41,17 @@ const HouseCard: React.FC<{
     );
 
     useEffect(() => {
-        const fetchImage = async () => {
+        const fetchImage = async (firstPhoto: File) => {
             try {
                 const res = await axios.get(
-                    `${URL}immobili/${props.house.id}/files/${props.house.files[0].id}`
+                    `${URL}immobili/${props.house.id}/files/${firstPhoto.id}`
                 );
                 const immagine = "data:image/png;base64," + res.data.byteArray;
                 setImageString(immagine);
                 dispatch(
                     addImage({
-                        id: props.house.id,
-                        file: { ...props.house.files[0], base64: immagine },
+                        id: firstPhoto.id,
+                        file: { ...firstPhoto, base64: immagine },
                     })
                 );
                 setIsLoading(false);
@@ -60,46 +60,69 @@ const HouseCard: React.FC<{
             }
         };
 
-        if (props.house.files.length === 0 || houseFile) {
+        const photos = props.house.files.filter(
+            (el) => el.tipologia === "FOTO"
+        );
+
+        let firstPhoto = null;
+
+        if (photos) {
+            photos.sort((el1, el2) => +el1.nome - +el2.nome);
+            firstPhoto = photos[0];
+        }
+
+        if (!firstPhoto || houseFile) {
             setIsLoading(false);
         } else {
-            fetchImage();
+            fetchImage(firstPhoto);
         }
     }, [props.house.id, props.house.files, dispatch, houseFile]);
 
     return (
         <div
             onClick={navigateToDedicatedHousePage}
-            className={`centered ${styles.houseCard}`}
+            className={`${styles.houseCard}`}
         >
             <div className={`centered ${styles.imgWrapper}`}>
-                {isLoading && <Spinner type="blue" />}
+                {isLoading && (
+                    <div
+                        className={`fullHeight centered ${styles.spinnerWrapper}`}
+                    >
+                        <Spinner type="blue" />
+                    </div>
+                )}
                 {!isLoading && (
                     <img alt="Foto non disponibile" src={imageString} />
                 )}
             </div>
             <div className={styles.textPart}>
-                <span className={styles.titolo}>{props.house.titolo}</span>
+                <p className={styles.titolo}>
+                    <span className={styles.ref}>{props.house.ref}</span>
+                    {props.house.titolo}
+                </p>
                 <span>
-                    <EuroIcon className={styles.icon} />{" "}
-                    {stringifyNumber(props.house.prezzo)}
-                    {props.house.contratto === "affitto" ? " al mese" : ""}
+                    <i className="bi bi-currency-euro rightSpace"></i>
+                    {`${capitalize(props.house.contratto)} a ${stringifyNumber(
+                        props.house.prezzo
+                    )} €
+                    ${props.house.contratto === "affitto" ? " al mese" : ""}`}
                 </span>
                 <span>
-                    <HomeIcon className={styles.icon} /> {props.house.locali}{" "}
-                    locali
+                    <i className="bi bi-house-door rightSpace"></i>
+                    {`${capitalize(props.house.tipologia)} di ${
+                        props.house.locali
+                    } local${props.house.locali === 1 ? "e" : "i"}`}
                 </span>
                 <span>
-                    {" "}
                     <SquareMetersIcon className={styles.icon} />{" "}
-                    {props.house.superficie} m²
-                    {window.innerWidth > 500 && "di superficie"}
+                    {`${props.house.superficie} m²
+                    ${window.innerWidth > 500 && "di superficie"}`}
                 </span>
                 <span>
                     <TownIcon className={styles.icon} />
                     {props.house.comune}{" "}
                     {props.house.zona && window.innerWidth > 500
-                        ? `(${props.house.zona})`
+                        ? `(${correctZona(props.house.zona)})`
                         : ""}
                 </span>
             </div>

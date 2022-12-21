@@ -1,6 +1,5 @@
 import styles from "./HousePhoto.module.css";
 import { ReactComponent as ArrowIcon } from "../../assets/icons/left-arrow.svg";
-import notAvailable from "../../assets/notAvailable.png";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import House from "../../types/House";
 import Spinner from "../UI/Spinner/Spinner";
@@ -64,54 +63,54 @@ const HousePhoto: React.FC<{
             !house.files[props.currentIndex].base64)
     ) {
         return (
-            <div
-                className={`${
-                    window.innerWidth > 510 ? styles.wrapper : "centered"
-                } ${styles.spinnerWrapper}`}
-            >
-                <Spinner type="blue" />
+            <div className={styles.frame}>
+                <div
+                    className={`${
+                        window.innerWidth > 510 ? styles.wrapper : "centered"
+                    } ${styles.spinnerWrapper}`}
+                >
+                    <Spinner type="blue" />
+                </div>
             </div>
         );
     }
 
     if (house && house.files.length === 0) {
-        return (
-            <div className={`${styles.imageWrapper} ${styles.wrapper}`}>
-                <img src={notAvailable} alt="Immagine non disponibile" />
-            </div>
-        );
+        return null;
     }
 
     return (
-        <div className={`${styles.imageWrapper} ${styles.wrapper}`}>
-            <img
-                src={house.files[props.currentIndex].base64}
-                alt="Immagine non disponibile"
-            />
-            {isFirstIndex() && <div></div>}
-            {!isFirstIndex() && (
-                <div
-                    className={`${styles.arrow} centered`}
-                    onClick={() => {
-                        props.onChangeIndex((prevIndex) => --prevIndex);
-                    }}
-                >
-                    <ArrowIcon />
+        <div className={styles.frame}>
+            <div className={`${styles.imageWrapper} ${styles.wrapper}`}>
+                {isFirstIndex() && <div></div>}
+                {!isFirstIndex() && (
+                    <div
+                        className={`${styles.arrow} centered`}
+                        onClick={() => {
+                            props.onChangeIndex((prevIndex) => --prevIndex);
+                        }}
+                    >
+                        <ArrowIcon />
+                    </div>
+                )}
+                <img
+                    src={house.files[props.currentIndex].base64}
+                    alt="Immagine non disponibile"
+                />
+                {isLastIndex() && <div></div>}
+                {!isLastIndex() && (
+                    <div
+                        className={`${styles.arrow} ${styles.right} centered`}
+                        onClick={() => {
+                            props.onChangeIndex((prevIndex) => ++prevIndex);
+                        }}
+                    >
+                        <ArrowIcon />
+                    </div>
+                )}
+                <div className={styles.numerazione}>
+                    {props.currentIndex + 1} di {house.files.length}
                 </div>
-            )}
-            {isLastIndex() && <div></div>}
-            {!isLastIndex() && (
-                <div
-                    className={`${styles.arrow} ${styles.right} centered`}
-                    onClick={() => {
-                        props.onChangeIndex((prevIndex) => ++prevIndex);
-                    }}
-                >
-                    <ArrowIcon />
-                </div>
-            )}
-            <div className={styles.numerazione}>
-                {props.currentIndex + 1} di {house.files.length}
             </div>
         </div>
     );

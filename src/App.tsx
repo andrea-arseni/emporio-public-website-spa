@@ -20,6 +20,8 @@ import Tv from "./pages/Tv/Tv";
 import { RootState } from "./store";
 import { hideOptions } from "./store/header-slice";
 import { hideBanner } from "./store/cookie-slice";
+import Contattaci from "./pages/Contattaci/Contattaci";
+import Filtra from "./pages/Filtra/Filtra";
 
 const App: React.FC<{}> = () => {
     const getCookie = (cname: string) => {
@@ -68,7 +70,9 @@ const App: React.FC<{}> = () => {
                 <Route path="/servizi/:serviceName" element={<Servizio />} />
                 <Route path="/immobili" element={<Immobili />} />
                 <Route path="/immobili/:immobileId" element={<Immobile />} />
+                <Route path="/filtra" element={<Filtra />} />
                 <Route path="/contatti" element={<Contatti />} />
+                <Route path="/contattaci" element={<Contattaci background />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/cookies" element={<Cookies />} />
                 <Route path="*" element={<NotFound />} />
@@ -81,9 +85,7 @@ const App: React.FC<{}> = () => {
 
 export default App;
 
-/*  
-- validazione numero di telefono come da backend
-- un giro su safari
-- un giro su edge
-- push * fine sito statico
+/*
+- hover verde - VINTO
+- immobile ?
 */

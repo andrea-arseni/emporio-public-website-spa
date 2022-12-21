@@ -19,16 +19,27 @@ const Sidebar: React.FC<{ isVisible: boolean }> = (props) => {
             >
                 <ul className={styles.list}>
                     <li onClick={hideSidebarHandler}>
-                        <NavItem type="sidebar" name="emporio" />
+                        <NavItem type="sidebar" name="home">
+                            <i className="bi bi-house-door rightSpace"></i>
+                        </NavItem>
                     </li>
                     <li onClick={hideSidebarHandler}>
-                        <NavItem type="sidebar" name="servizi" />
+                        <NavItem type="sidebar" name="emporio">
+                            <i className="bi bi-shop rightSpace"></i>
+                        </NavItem>
+                    </li>
+                    <li onClick={hideSidebarHandler}>
+                        <NavItem type="sidebar" name="servizi">
+                            <i className="bi bi-inboxes rightSpace"></i>
+                        </NavItem>
                     </li>
                     <li>
                         <ImmobiliNavItem type="sidebar" />
                     </li>
                     <li onClick={hideSidebarHandler}>
-                        <NavItem name="contatti" type="sidebar" />
+                        <NavItem name="contatti" type="sidebar">
+                            <i className="bi bi-people rightSpace"></i>
+                        </NavItem>
                     </li>
                 </ul>
             </nav>

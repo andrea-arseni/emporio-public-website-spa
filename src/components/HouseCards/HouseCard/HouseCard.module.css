@@ -1,39 +1,44 @@
 .houseCard {
     border: 1px solid gray;
     width: 90%;
-    height: 200px;
-    background-color: white;
+    height: 250px;
+    background-color: rgb(242, 242, 242);
     border-radius: 6px;
     box-sizing: border-box;
     overflow: hidden;
     cursor: pointer;
     margin-bottom: 20px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.houseCard:hover .textPart {
-    transform: scale(1.01);
+.houseCard:hover {
     color: black;
     background-color: white;
 }
 
 .houseCard:hover img {
-    transform: scale(1.02);
+    transform: scale(1);
     opacity: 1;
 }
 
-.houseCard:hover .titolo {
-    text-decoration: underline;
+.spinnerWrapper {
+    width: 300px;
 }
 
 .imgWrapper {
     height: 100%;
-    width: 40%;
+    max-width: 300px;
+    border-radius: 6px;
     overflow: hidden;
-    background: linear-gradient(rgb(255, 255, 255), rgb(254, 230, 230));
+    background: linear-gradient(rgb(255, 255, 255), rgb(215, 215, 215));
 }
 
 .imgWrapper img {
     opacity: 0.9;
+    transform: scale(1.1);
     min-height: 100%;
     min-width: 100%;
     transition: 0.6s all;
@@ -50,7 +55,13 @@
     justify-content: space-around;
     color: rgb(56, 56, 56);
     transition: all 0.6s;
-    background-color: rgb(242, 242, 242);
+}
+
+.textPart * {
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .textPart:hover {
@@ -62,15 +73,38 @@
     color: rgb(5, 89, 215);
 }
 
-.icon {
-    margin-right: 12px;
+.ref {
     position: relative;
-    top: 4px;
+    top: 2px;
+    padding: 2px 6px 2px 6px;
+    border: 1px solid rgb(5, 89, 215);
+    border-radius: 10px;
+    margin-right: 6px;
+}
+
+.ref:hover {
+    text-decoration: none !important;
+}
+
+.icon {
+    margin-right: 6px;
+    transform: scale(0.8);
+    position: relative;
+    left: -4px;
 }
 
 .sup {
     vertical-align: super;
     font-size: xx-small;
+}
+
+@media screen and (max-width: 1050px) {
+    .imgWrapper {
+        max-width: 250px;
+    }
+    .spinnerWrapper {
+        width: 250px;
+    }
 }
 
 @media screen and (max-width: 900px) {
@@ -79,9 +113,35 @@
     }
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 850px) {
+    .imgWrapper {
+        height: 70%;
+        max-width: 200px;
+    }
+    .spinnerWrapper {
+        width: 200px;
+    }
+}
+
+@media screen and (max-width: 767px) {
     .textPart {
         font-size: medium;
+    }
+    .imgWrapper {
+        height: 100%;
+        max-width: 300px;
+    }
+    .spinnerWrapper {
+        width: 300px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .imgWrapper {
+        max-width: 250px;
+    }
+    .spinnerWrapper {
+        width: 250px;
     }
 }
 
@@ -91,17 +151,41 @@
     }
 }
 
+@media screen and (max-width: 550px) {
+    .imgWrapper {
+        height: 70%;
+        max-width: 200px;
+    }
+    .spinnerWrapper {
+        width: 200px;
+    }
+}
+
 @media screen and (max-width: 450px) {
-    .houseCard {
-        width: 98%;
-    }
-    .textPart {
-        width: 45%;
-    }
     .titolo {
         font-weight: normal;
     }
     .imgWrapper {
-        width: 55%;
+        height: 60%;
+        max-width: 160px;
+    }
+    .spinnerWrapper {
+        width: 160px;
+    }
+    .houseCard {
+        height: 300px;
+        width: 95%;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .imgWrapper {
+        max-width: 140px;
+    }
+    .spinnerWrapper {
+        width: 140px;
+    }
+    .houseCard {
+        width: 100%;
     }
 }

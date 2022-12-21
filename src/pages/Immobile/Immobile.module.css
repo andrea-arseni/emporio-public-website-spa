@@ -2,6 +2,10 @@
     display: none;
 }
 
+.icon {
+    margin-right: 12px;
+}
+
 .ref {
     margin-right: 13px;
     padding: 6px;
@@ -10,18 +14,16 @@
 }
 
 .wideScreenOnly {
-    position: fixed;
-    top: 162px;
-    right: 0px;
-    height: calc(100vh - 240px);
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .houseWrapper {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-flow: column;
     border-radius: 6px;
+    height: 100%;
     overflow: scroll;
 }
 
@@ -29,8 +31,6 @@
     width: 100%;
     box-sizing: border-box;
     padding: 20px;
-    border-radius: 6px;
-    border: 1px solid gray;
     background-color: white;
 }
 
@@ -39,10 +39,11 @@
     color: rgb(11, 99, 242);
     text-transform: uppercase;
     text-align: center;
+    transform: scale(0.8);
 }
 
 .descrizione {
-    padding: 0 10px 10px 10px;
+    padding: 0 20px 20px 20px;
     text-align: justify;
 }
 
@@ -60,15 +61,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8px 14px;
+    margin: 8px 14px;
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 767px) {
     .wideScreenOnly {
         display: none;
     }
     .filterButtonArea {
         display: block;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .title {
+        font-size: medium;
+        transform: scale(1);
     }
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { URL } from "../../env";
 import {
@@ -8,21 +8,20 @@ import {
     addHouses,
 } from "../../store/houses-slice";
 import { stringifyNumber } from "../../utils/numberHandler";
-import Button from "../../components/UI/Button/Button";
 import styles from "./Immobile.module.css";
 import { RootState } from "../../store";
 import axios from "axios";
 import ContactForm from "../../components/ContactForm/ContactForm";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import Input from "../../components/UI/Input/Input";
 import FeaturesWrapper from "../../components/FeaturesWrapper/FeaturesWrapper";
 import { ReactComponent as EuroIcon } from "../../assets/icons/euro.svg";
 import { ReactComponent as SquareMetersIcon } from "../../assets/icons/planimetry.svg";
-import { ReactComponent as HomeIcon } from "../../assets/icons/home.svg";
+import { ReactComponent as HomeIcon } from "../../assets/icons/house.svg";
 import HousePhoto from "../../components/HousePhoto/HousePhoto";
 import ErrorPage from "../Error/Error";
+import useWindowSize from "../../hooks/use-size";
 
-type FeatureField = {
+export type FeatureField = {
     value: string;
     label: string;
 };
@@ -30,6 +29,10 @@ type FeatureField = {
 const Immobile: React.FC<{}> = () => {
     const location = useLocation();
     const dispatch = useDispatch();
+
+    const [width] = useWindowSize();
+
+    const navigate = useNavigate();
 
     const id = Number.parseInt(
         location.pathname.split("?")[0].split("/").pop()!
@@ -77,11 +80,6 @@ const Immobile: React.FC<{}> = () => {
 
         fetchImmobile();
     }, [dispatch, id, house]);
-
-    const [filterFormOpened, setFilterFormOpened] = useState(false);
-
-    const filterFormToggler = () =>
-        setFilterFormOpened((prevState) => !prevState);
 
     if (errorMessage) return <ErrorPage message={errorMessage} />;
 
@@ -157,9 +155,7 @@ const Immobile: React.FC<{}> = () => {
                 }${
                     house.classeEnergetica !== "ESENTE"
                         ? ` ${
-                              house.consumo !== 175
-                                  ? house.consumo
-                                  : `> ${house.consumo}`
+                              house.consumo <= 175 ? house.consumo : `> 175`
                           } kWh/m² anno`
                         : ""
                 }`,
@@ -402,12 +398,6 @@ const Immobile: React.FC<{}> = () => {
             },
             {
                 value: displayNonSpecificatoSeAssente(
-                    house.caratteristicheImmobile.tipoLocazione
-                ),
-                label: "Tipo locazione",
-            },
-            {
-                value: displayNonSpecificatoSeAssente(
                     house.caratteristicheImmobile.tipoContratto
                 ),
                 label: "Tipo contratto",
@@ -458,24 +448,24 @@ const Immobile: React.FC<{}> = () => {
         );
     };
 
+    const goToContattaciPage = () =>
+        navigate(`/contattaci?immobileId=${house?.id}`);
+
     return (
-        <div className={`page gray`}>
-            <div className={styles.filterButtonArea}>
-                <Button
-                    onClick={filterFormToggler}
-                    color="blue_outline"
-                    fillSpace
-                >
-                    {filterFormOpened ? "Chiudi Form" : "Ti interessa?"}
-                </Button>
-            </div>
-            {filterFormOpened && (
-                <div className={`centered`}>
-                    <ContactForm />
-                </div>
-            )}
-            <div>
-                <div className={`col-8 ${styles.houseWrapper}`}>
+        <div
+            className={`page container-fluid text-center fullHeight ${styles.immobili}`}
+        >
+            <div className={`row fullHeight ${styles.row}`}>
+                {width < 768 && (
+                    <button
+                        className="btn btn-outline-primary"
+                        type="button"
+                        onClick={() => goToContattaciPage()}
+                    >
+                        Ti interessa? Contattaci
+                    </button>
+                )}
+                <div className={`${styles.houseWrapper} col-md-8`}>
                     <div className={styles.houseData}>
                         {house && (
                             <h3 className={`centered ${styles.title}`}>
@@ -486,15 +476,14 @@ const Immobile: React.FC<{}> = () => {
                         {house && (
                             <div className={styles.mainData}>
                                 <div>
-                                    <EuroIcon className={styles.icon} />{" "}
+                                    <EuroIcon />
                                     {stringifyNumber(house.prezzo)}
                                     {house.contratto === "affitto"
                                         ? " al mese"
                                         : ""}
                                 </div>
                                 <div>
-                                    <HomeIcon className={styles.icon} />{" "}
-                                    {house.locali} locali
+                                    <HomeIcon /> {house.locali} locali
                                 </div>
                                 <div>
                                     <SquareMetersIcon className={styles.icon} />{" "}
@@ -503,24 +492,17 @@ const Immobile: React.FC<{}> = () => {
                             </div>
                         )}
 
-                        <HousePhoto
-                            currentIndex={currentPhotoIndex}
-                            onChangeIndex={setCurrentPhotoIndex}
-                        />
+                        {
+                            <HousePhoto
+                                currentIndex={currentPhotoIndex}
+                                onChangeIndex={setCurrentPhotoIndex}
+                            />
+                        }
                         {house && (
-                            <FeaturesWrapper title="Caratteristiche Principali">
-                                {caratteristiche.principali.map((el) => (
-                                    <Input
-                                        key={el.label}
-                                        type="text"
-                                        value={el.value}
-                                        ref={null}
-                                        readOnly
-                                    >
-                                        {el.label}
-                                    </Input>
-                                ))}
-                            </FeaturesWrapper>
+                            <FeaturesWrapper
+                                title="Caratteristiche Principali"
+                                features={caratteristiche.principali}
+                            />
                         )}
                         {house &&
                             house.caratteristicheImmobile &&
@@ -535,112 +517,59 @@ const Immobile: React.FC<{}> = () => {
                                 </FeaturesWrapper>
                             )}
                         {house && house.caratteristicheImmobile && (
-                            <FeaturesWrapper title="Efficienza Energetica e Riscaldamento">
-                                {caratteristiche.efficienzaEnergetica.map(
-                                    (el) => (
-                                        <Input
-                                            key={el.label}
-                                            type="text"
-                                            value={el.value}
-                                            ref={null}
-                                            readOnly
-                                        >
-                                            {el.label}
-                                        </Input>
-                                    )
-                                )}
-                            </FeaturesWrapper>
+                            <FeaturesWrapper
+                                title="Efficienza Energetica e Riscaldamento"
+                                features={caratteristiche.efficienzaEnergetica}
+                            />
                         )}
                         {house && house.caratteristicheImmobile && (
-                            <FeaturesWrapper title="Caratteristiche Costruzione">
-                                {caratteristiche.costruzione.map((el) => (
-                                    <Input
-                                        key={el.label}
-                                        type="text"
-                                        value={el.value}
-                                        ref={null}
-                                        readOnly
-                                    >
-                                        {el.label}
-                                    </Input>
-                                ))}
-                            </FeaturesWrapper>
+                            <FeaturesWrapper
+                                title="Caratteristiche Edificio"
+                                features={caratteristiche.costruzione}
+                            />
                         )}
                         {house && house.caratteristicheImmobile && (
-                            <FeaturesWrapper title="Caratteristiche Specifiche">
-                                {caratteristiche.specifiche.map((el) => (
-                                    <Input
-                                        key={el.label}
-                                        type="text"
-                                        value={el.value}
-                                        ref={null}
-                                        readOnly
-                                    >
-                                        {el.label}
-                                    </Input>
-                                ))}
-                            </FeaturesWrapper>
+                            <FeaturesWrapper
+                                title="Caratteristiche Specifiche"
+                                features={caratteristiche.specifiche}
+                            />
                         )}
                         {house && house.caratteristicheImmobile && (
-                            <FeaturesWrapper title="Caratteristiche Serramenti">
-                                {caratteristiche.serramenti.map((el) => (
-                                    <Input
-                                        key={el.label}
-                                        type="text"
-                                        value={el.value}
-                                        ref={null}
-                                        readOnly
-                                    >
-                                        {el.label}
-                                    </Input>
-                                ))}
-                            </FeaturesWrapper>
+                            <FeaturesWrapper
+                                title="Caratteristiche Serramenti"
+                                features={caratteristiche.serramenti}
+                            />
                         )}
                         {house && house.caratteristicheImmobile && (
-                            <FeaturesWrapper title="Caratteristiche Impianti">
-                                {caratteristiche.impianti.map((el) => (
-                                    <Input
-                                        key={el.label}
-                                        type="text"
-                                        value={el.value}
-                                        ref={null}
-                                        readOnly
-                                    >
-                                        {el.label}
-                                    </Input>
-                                ))}
-                            </FeaturesWrapper>
+                            <FeaturesWrapper
+                                title="Caratteristiche Impianti"
+                                features={caratteristiche.impianti}
+                            />
                         )}
                         {house && house.caratteristicheImmobile && (
-                            <FeaturesWrapper title="Categoria catastale e spese Previste">
-                                {caratteristiche.spese.map((el) => (
-                                    <Input
-                                        key={el.label}
-                                        type="text"
-                                        value={el.value}
-                                        ref={null}
-                                        readOnly
-                                    >
-                                        {el.label}
-                                    </Input>
-                                ))}
-                            </FeaturesWrapper>
+                            <FeaturesWrapper
+                                title="Categoria catastale e spese Previste"
+                                features={caratteristiche.spese}
+                            />
                         )}
                         {house &&
                             house.caratteristicheImmobile &&
                             house.contratto === "affitto" && (
-                                <FeaturesWrapper title="Caratteristiche Locazione"></FeaturesWrapper>
+                                <FeaturesWrapper
+                                    title="Caratteristiche Locazione"
+                                    features={caratteristiche.locazione}
+                                ></FeaturesWrapper>
                             )}
                     </div>
                 </div>
-            </div>
-            <div className={`col-4 centered ${styles.wideScreenOnly}`}>
-                {isLoading && (
-                    <div className={`${styles.spinnerWrapper} centered`}>
-                        <Spinner type="blue" />
-                    </div>
-                )}
-                {!isLoading && <ContactForm />}
+                <div className={`col-md-4 ${styles.wideScreenOnly}`}>
+                    {isLoading && (
+                        <div className={`${styles.spinnerWrapper} centered`}>
+                            <Spinner type="blue" />
+                        </div>
+                    )}
+                    {!isLoading && <ContactForm little />}
+                </div>
             </div>
         </div>
     );

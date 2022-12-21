@@ -18,16 +18,18 @@ const Input: React.FC<{
     return (
         <Fragment>
             <div
-                className={`${styles.inputWrapper} ${
-                    props.isInvalid && styles.invalid
-                }`}
+                className={`${props.isInvalid && styles.invalid} ${
+                    styles.formControl
+                } vertical`}
             >
-                <label htmlFor={props.id}>
-                    {props.children}{" "}
-                    {props.isInvalid ? "* " + props.invalidMessage : " "}
+                <label>
+                    {`${props.children} ${
+                        props.isInvalid ? "* " + props.invalidMessage : ""
+                    }`}
                 </label>
                 {props.type !== "textarea" && (
                     <input
+                        className="form-control"
                         readOnly={props.readOnly}
                         ref={ref}
                         type={props.type}
@@ -39,6 +41,7 @@ const Input: React.FC<{
                 )}
                 {props.type === "textarea" && (
                     <textarea
+                        className="form-control"
                         value={props.value}
                         id={props.id}
                         rows={props.rows ? props.rows : 4}

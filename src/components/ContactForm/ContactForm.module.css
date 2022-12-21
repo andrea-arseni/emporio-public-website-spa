@@ -1,69 +1,110 @@
-.form * {
-    width: 80%;
+.frame {
+    min-height: 500px;
+    height: 87%;
 }
 
-.formValutazione * {
+.form * {
+    width: 80%;
     margin-top: 10px;
 }
 
 .form {
-    border-radius: 4px;
+    box-sizing: border-box;
+    border-radius: 10px;
     background: linear-gradient(
         to left,
-        rgb(251, 249, 245),
-        rgb(251, 251, 241)
+        rgb(224, 224, 224),
+        rgb(240, 240, 240),
+        rgb(214, 214, 214)
     );
     z-index: 9999;
     flex-flow: column;
     justify-content: space-around;
     border: 1px solid gray;
-}
-
-.formValutazione {
-    min-height: 70%;
+    max-width: 500px;
+    border: 1px solid gray;
+    height: 100%;
     padding: 30px;
 }
 
-.formDomanda * {
-    margin-top: 5px;
+.big {
+    padding: 30px;
 }
 
-.formDomanda {
-    min-height: 86%;
-    padding: 15px 30px;
+.little {
+    font-size: smaller;
+    padding: 6px;
 }
 
 .privacySection {
+    border: 1px solid gray;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    font-size: small;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: x-small;
     transition: all 1s;
 }
 
 .evidence {
     transition: all 1s;
     color: red;
+    background-color: rgb(250, 189, 189);
+    border: 1px solid red;
 }
 
-.notEvidence {
-    transition: all 1s;
-    color: color;
+.privacyButtonArea {
+    width: 8%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.privacyTextArea {
+    width: 80%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .privacyCheckButton {
-    width: 8%;
+    transform: scale(2);
 }
 
 .title {
     color: rgb(52, 52, 52);
-    font-weight: normal;
+    font-weight: 300;
     text-align: center;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 12px;
+}
+
+@media screen and (max-width: 600px) {
+    .form {
+        padding: 20px;
+        max-width: 450px;
+    }
 }
 
 @media screen and (max-width: 500px) {
-    .formDomanda,
-    .formValutazione {
+    .form {
         padding: 10px;
+        max-width: 400px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .form {
+        padding: 5px;
+        max-width: 375px;
+        font-size: small;
     }
 }

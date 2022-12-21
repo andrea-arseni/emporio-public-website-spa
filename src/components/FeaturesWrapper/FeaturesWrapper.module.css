@@ -1,22 +1,24 @@
 .featureWrapper {
-    margin-top: 12px;
+    margin-top: 20px;
     border: 1px solid gray;
     border-radius: 6px;
 }
 
-.featureWrapper * {
+.titleFrame {
     margin: 5px;
-}
-
-.title {
     padding: 12px;
-    color: rgb(11, 99, 242);
+    color: #444;
     text-transform: uppercase;
     text-align: center;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    font-size: medium;
+}
+
+.title {
+    padding-right: 10px;
 }
 
 .arrowWrapper {
@@ -27,4 +29,23 @@
 
 .changed {
     transform: scale(1.4) rotate(90deg);
+}
+
+.childrenWrapper {
+    padding: 16px;
+}
+
+.frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+@media screen and (max-width: 500px) {
+    .featureWrapper {
+        font-size: small;
+    }
 }

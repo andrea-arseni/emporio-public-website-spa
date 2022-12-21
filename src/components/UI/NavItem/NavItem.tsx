@@ -16,6 +16,7 @@ const NavItem: React.FC<{ name: string; type: "header" | "sidebar" }> = (
             }
             to={`/${props.name}`}
         >
+            {props.children && props.children}
             {props.name.charAt(0).toUpperCase() + props.name.slice(1)}
         </NavLink>
     );
