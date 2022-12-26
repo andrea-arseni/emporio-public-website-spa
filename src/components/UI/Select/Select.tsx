@@ -4,9 +4,10 @@ import styles from "./Select.module.css";
 const Select: React.FC<{
     labelName: string;
     options: { value: any; name: string }[];
-    defaulValue: any;
+    defaulValue?: any;
     onChange: React.ChangeEventHandler<HTMLSelectElement>;
     ref?: React.Ref<any>;
+    value?: any;
 }> = React.forwardRef((props, ref: React.Ref<any>) => {
     const options = props.options.map((el) => (
         <option key={el.name} value={el.value}>
@@ -21,6 +22,7 @@ const Select: React.FC<{
                 ref={ref}
                 onChange={props.onChange}
                 id={props.labelName}
+                value={props.value}
                 defaultValue={props.defaulValue}
             >
                 {options}

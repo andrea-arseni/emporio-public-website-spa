@@ -9,6 +9,7 @@
     align-items: center;
     justify-content: flex-end;
     padding-right: 5%;
+    overflow: hidden;
 }
 
 .lowerHeader {
@@ -18,6 +19,7 @@
     justify-content: space-between;
     padding: 0 4%;
     height: 110px;
+    width: 100%;
 }
 
 .hamburger {

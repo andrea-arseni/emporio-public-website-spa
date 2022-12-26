@@ -1,7 +1,6 @@
 .wrapper {
     width: 100%;
     max-width: 600px;
-    height: 400px;
     overflow: hidden;
     position: relative;
     display: flex;
@@ -9,6 +8,14 @@
     border: 1px solid gray;
     border-radius: 6px;
     background-color: white;
+    height: 450px;
+}
+
+.littleWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 450px;
 }
 
 .frame {
@@ -73,14 +80,11 @@
     z-index: 2000;
 }
 
-@media screen and (max-width: 1000px) {
-    .wrapper {
-        height: 450px;
-    }
-}
-
 @media screen and (max-width: 900px) {
     .wrapper {
+        height: 400px;
+    }
+    .littleWrapper {
         height: 400px;
     }
 }
@@ -89,10 +93,16 @@
     .wrapper {
         height: 500px;
     }
+    .littleWrapper {
+        height: 500px;
+    }
 }
 
 @media screen and (max-width: 700px) {
     .wrapper {
+        height: 450px;
+    }
+    .littleWrapper {
         height: 450px;
     }
 }
@@ -101,10 +111,16 @@
     .wrapper {
         height: 400px;
     }
+    .littleWrapper {
+        height: 400px;
+    }
 }
 
 @media screen and (max-width: 500px) {
     .wrapper {
+        height: 350px;
+    }
+    .littleWrapper {
         height: 350px;
     }
     .wrapper div {
@@ -116,6 +132,9 @@
 
 @media screen and (max-width: 400px) {
     .imageWrapper {
+        height: 300px;
+    }
+    .littleWrapper {
         height: 300px;
     }
 }

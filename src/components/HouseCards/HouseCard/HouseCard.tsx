@@ -78,6 +78,21 @@ const HouseCard: React.FC<{
         }
     }, [props.house.id, props.house.files, dispatch, houseFile]);
 
+    const addLocali = () => {
+        const tipologia = props.house.tipologia?.toLowerCase();
+        return !tipologia ||
+            tipologia === "box" ||
+            tipologia === "camera singola" ||
+            tipologia === "loft" ||
+            tipologia === "posto auto" ||
+            tipologia === "posto letto in camera condivisa" ||
+            tipologia === "uffici open space"
+            ? ""
+            : `di ${props.house.locali} local${
+                  props.house.locali === 1 ? "e" : "i"
+              }`;
+    };
+
     return (
         <div
             onClick={navigateToDedicatedHousePage}
@@ -109,14 +124,16 @@ const HouseCard: React.FC<{
                 </span>
                 <span>
                     <i className="bi bi-house-door rightSpace"></i>
-                    {`${capitalize(props.house.tipologia)} di ${
-                        props.house.locali
-                    } local${props.house.locali === 1 ? "e" : "i"}`}
+                    {`${
+                        props.house.tipologia
+                            ? capitalize(props.house.tipologia)
+                            : ""
+                    } ${addLocali()}`}
                 </span>
                 <span>
                     <SquareMetersIcon className={styles.icon} />{" "}
                     {`${props.house.superficie} m²
-                    ${window.innerWidth > 500 && "di superficie"}`}
+                    ${window.innerWidth > 500 ? "di superficie" : ""}`}
                 </span>
                 <span>
                     <TownIcon className={styles.icon} />

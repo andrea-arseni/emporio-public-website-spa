@@ -72,7 +72,7 @@ const App: React.FC<{}> = () => {
                 <Route path="/immobili/:immobileId" element={<Immobile />} />
                 <Route path="/filtra" element={<Filtra />} />
                 <Route path="/contatti" element={<Contatti />} />
-                <Route path="/contattaci" element={<Contattaci background />} />
+                <Route path="/contattaci" element={<Contattaci />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/cookies" element={<Cookies />} />
                 <Route path="*" element={<NotFound />} />
@@ -86,6 +86,5 @@ const App: React.FC<{}> = () => {
 export default App;
 
 /*
-- hover verde - VINTO
-- immobile ?
+- Testing generico desktop
 */

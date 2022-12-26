@@ -66,7 +66,9 @@ const HousePhoto: React.FC<{
             <div className={styles.frame}>
                 <div
                     className={`${
-                        window.innerWidth > 510 ? styles.wrapper : "centered"
+                        window.innerWidth > 510
+                            ? styles.wrapper
+                            : styles.littleWrapper
                     } ${styles.spinnerWrapper}`}
                 >
                     <Spinner type="blue" />

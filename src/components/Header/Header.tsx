@@ -60,7 +60,7 @@ const Header: React.FC<{}> = () => {
                     <div></div>
                     <div></div>
                 </div>
-                <nav className={`centered ${styles.nav}`}>
+                <nav className={`${styles.nav}`}>
                     <ul className={styles.list}>
                         <li>
                             <NavItem name="emporio" type="header" />

@@ -5,7 +5,6 @@ import { Fragment } from "react";
 
 const Modal: React.FC<{
     header?: string;
-    local?: boolean;
     text?: string[];
     buttons?: { message: string; color: color; action: () => void }[];
 }> = (props) => {
@@ -34,11 +33,7 @@ const Modal: React.FC<{
     );
 
     return (
-        <div
-            className={`${styles.backdrop} ${
-                props.local ? styles.local : styles.universal
-            } centered`}
-        >
+        <div className={`${styles.backdrop} ${styles.universal} centered`}>
             <div
                 className={`${styles.modal} centered ${
                     props.children ? styles.large : ""

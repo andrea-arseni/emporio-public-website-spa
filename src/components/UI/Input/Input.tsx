@@ -7,6 +7,7 @@ const Input: React.FC<{
     type: inputType;
     id?: string;
     value?: string;
+    little?: boolean;
     isInvalid?: boolean;
     onChange?: (event: any) => void;
     onBlur?: () => void;
@@ -20,7 +21,7 @@ const Input: React.FC<{
             <div
                 className={`${props.isInvalid && styles.invalid} ${
                     styles.formControl
-                } vertical`}
+                } ${props.little && styles.little}  vertical`}
             >
                 <label>
                     {`${props.children} ${

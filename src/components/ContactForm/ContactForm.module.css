@@ -83,8 +83,6 @@
     text-align: center;
     margin: 0;
     padding: 0;
-    position: relative;
-    top: 12px;
 }
 
 @media screen and (max-width: 600px) {

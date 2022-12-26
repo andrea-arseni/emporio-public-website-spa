@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { stringifyNumber } from "../../utils/numberHandler";
 import Button from "../UI/Button/Button";
 import styles from "./FilterForm.module.css";
@@ -7,15 +7,28 @@ import ReactDOM from "react-dom";
 import Modal from "../Modal/Modal";
 import { useNavigate } from "react-router-dom";
 
-const generatePriceList = () => {
+const generatePriceList = (isContrattoAffitto: boolean) => {
     const priceList: { value: number; name: string }[] = [];
-    for (let i = 10000; i < 1000000; i += 10000) {
-        priceList.push({ value: i, name: stringifyNumber(i) + " €" });
+    for (let i = 100; i < 10000; i += 100) {
+        const number = isContrattoAffitto ? i : i * 100;
+        priceList.push({
+            value: number,
+            name: stringifyNumber(number) + " €",
+        });
     }
     priceList.unshift({ value: 0, name: "Indifferente" });
-    priceList.push({ value: 10000000, name: "Un milione di € e oltre" });
+    priceList.push({
+        value: 10000000,
+        name: isContrattoAffitto
+            ? "10.000 € e oltre"
+            : "Un milione di € e oltre",
+    });
     return priceList;
 };
+
+const PRICES_VENDITA = generatePriceList(false);
+
+const PRICES_AFFITTO = generatePriceList(true);
 
 const FilterForm: React.FC<{
     setSearchParams: (obj: any) => void;
@@ -24,43 +37,86 @@ const FilterForm: React.FC<{
 }> = (props) => {
     const navigate = useNavigate();
 
-    const priceList: { value: number; name: string }[] = generatePriceList();
+    const [priceList, setPriceList] = useState<
+        { value: number; name: string }[]
+    >([]);
+
+    const [minPriceIndex, setMinPriceIndex] = useState(0);
+
+    const [maxPriceIndex, setMaxPriceIndex] = useState(100);
 
     const [errorMessage, setErrorMessage] = useState("");
 
-    const retrieveInitialIndex = (
-        searchParamName: string,
-        searchParams: URLSearchParams,
-        priceList: { value: number; name: string }[],
-        defaultValue: number
-    ) => {
-        if (!searchParams.get(searchParamName)) return defaultValue;
-        const index = priceList.findIndex(
-            (el) => el.value.toString() === searchParams.get(searchParamName)
-        );
-        if (index === -1 && !errorMessage) {
-            setErrorMessage(
-                `Parametro di ricerca ${
-                    searchParamName === "priceMin" ? `"priceMin"` : `"priceMax"`
-                } non corretto. Usare il form per evitare errori.`
+    useEffect(() => {
+        const isContrattoAffitto =
+            props.searchParams.get("contratto")?.trim().toLowerCase() ===
+            "affitto";
+
+        setPriceList(isContrattoAffitto ? PRICES_AFFITTO : PRICES_VENDITA);
+
+        const PRICES = isContrattoAffitto ? PRICES_AFFITTO : PRICES_VENDITA;
+
+        const retrieveInitialIndex = (
+            searchParamName: string,
+            defaultValue: number
+        ) => {
+            if (
+                !props.searchParams.get(searchParamName) ||
+                PRICES.length === 0
+            ) {
+                return defaultValue;
+            }
+            const index = PRICES.findIndex(
+                (el) =>
+                    el.value.toString() ===
+                    props.searchParams.get(searchParamName)
             );
-            return defaultValue;
-        }
-        return index;
+            if (index === -1 && !errorMessage) {
+                setErrorMessage(
+                    `Parametro di ricerca ${
+                        searchParamName === "priceMin"
+                            ? `"priceMin"`
+                            : `"priceMax"`
+                    } non corretto. Usare il form per evitare errori.`
+                );
+                return defaultValue;
+            }
+            return index;
+        };
+
+        setMinPriceIndex(retrieveInitialIndex("priceMin", 0));
+
+        setMaxPriceIndex(retrieveInitialIndex("priceMax", 100));
+    }, [props.searchParams, errorMessage]);
+
+    const [contratto, setContratto] = useState<string | null>(
+        props.searchParams.get("contratto")
+            ? props.searchParams.get("contratto")
+            : "Tutti"
+    );
+
+    const [categoria, setCategoria] = useState<string | null>(
+        props.searchParams.get("categoria")
+            ? props.searchParams.get("categoria")
+            : "Tutti"
+    );
+
+    useEffect(() => {
+        const isContrattoAffitto =
+            contratto?.trim().toLowerCase() === "affitto";
+
+        setPriceList(isContrattoAffitto ? PRICES_AFFITTO : PRICES_VENDITA);
+    }, [contratto]);
+
+    const formControlHandler = (
+        event: any,
+        type: "contratto" | "categoria"
+    ) => {
+        selectFormHandler();
+        type === "contratto"
+            ? setContratto(event.target.value)
+            : setCategoria(event.target.value);
     };
-
-    const [minPriceIndex, setMinPriceIndex] = useState(
-        retrieveInitialIndex("priceMin", props.searchParams, priceList, 0)
-    );
-
-    const [maxPriceIndex, setMaxPriceIndex] = useState(
-        retrieveInitialIndex(
-            "priceMax",
-            props.searchParams,
-            priceList,
-            priceList.length - 1
-        )
-    );
 
     const [isFormUsed, setIsFormUsed] = useState(false);
 
@@ -98,14 +154,13 @@ const FilterForm: React.FC<{
             priceMin: inputPriceMinRef.current!.value,
             priceMax: inputPriceMaxRef.current!.value,
         });
-        if (props.fat)
-            navigate(
-                `/immobili?contratto=${
-                    inputContrattoRef.current!.value
-                }&categoria=${inputCategoriaRef.current!.value}&priceMin=${
-                    inputPriceMinRef.current!.value
-                }&priceMax=${inputPriceMaxRef.current!.value}`
-            );
+        navigate(
+            `/immobili?contratto=${
+                inputContrattoRef.current!.value
+            }&categoria=${inputCategoriaRef.current!.value}&priceMin=${
+                inputPriceMinRef.current!.value
+            }&priceMax=${inputPriceMaxRef.current!.value}`
+        );
     };
 
     return (
@@ -120,45 +175,49 @@ const FilterForm: React.FC<{
                         Filtra gli Immobili
                     </h4>
                     <Select
-                        onChange={selectFormHandler}
+                        onChange={(e) => formControlHandler(e, "contratto")}
                         labelName="Contratto"
                         options={[
                             { name: "Tutti", value: "Tutti" },
                             { name: "Vendita", value: "Vendita" },
                             { name: "Affitto", value: "Affitto" },
                         ]}
-                        defaulValue={props.searchParams.get("contratto")}
+                        value={contratto}
                         ref={inputContrattoRef}
                     />
                     <Select
-                        onChange={selectFormHandler}
+                        onChange={(e) => formControlHandler(e, "categoria")}
                         labelName="Categoria"
                         options={[
                             { name: "Tutti", value: "Tutti" },
                             { name: "Residenziale", value: "Residenziale" },
                             { name: "Commerciale", value: "Commerciale" },
                         ]}
-                        defaulValue={props.searchParams.get("categoria")!}
+                        value={categoria}
                         ref={inputCategoriaRef}
                     />
-                    <Select
-                        onChange={minPriceHandler}
-                        labelName="Prezzo Minimo"
-                        options={priceList.filter(
-                            (_, index) => index < maxPriceIndex
-                        )}
-                        defaulValue={priceList[minPriceIndex].value}
-                        ref={inputPriceMinRef}
-                    />
-                    <Select
-                        onChange={maxPriceHandler}
-                        labelName="Prezzo Massimo"
-                        options={priceList.filter(
-                            (_, index) => index > minPriceIndex
-                        )}
-                        defaulValue={priceList[maxPriceIndex].value}
-                        ref={inputPriceMaxRef}
-                    />
+                    {priceList.length > 0 && (
+                        <Select
+                            onChange={minPriceHandler}
+                            labelName="Prezzo Minimo"
+                            options={priceList.filter(
+                                (_, index) => index < maxPriceIndex
+                            )}
+                            value={priceList[minPriceIndex].value}
+                            ref={inputPriceMinRef}
+                        />
+                    )}
+                    {priceList.length > 0 && (
+                        <Select
+                            onChange={maxPriceHandler}
+                            labelName="Prezzo Massimo"
+                            options={priceList.filter(
+                                (_, index) => index > minPriceIndex
+                            )}
+                            ref={inputPriceMaxRef}
+                            value={priceList[maxPriceIndex].value}
+                        />
+                    )}
                     <br />
                     <Button
                         color="blue"

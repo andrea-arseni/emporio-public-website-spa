@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useRef, useState } from "react";
+import React, { FormEvent, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -12,54 +12,70 @@ import styles from "./ContactForm.module.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { cleanPhoneNumber } from "../../utils/numberHandler";
-import useWindowSize from "../../hooks/use-size";
 import { color } from "../UI/Button/Button";
 import { capitalize } from "../../utils/stringHandler";
 import { URL } from "../../env";
+import useWindowSize from "../../hooks/use-size";
 
 const ContactForm: React.FC<{
-    local?: boolean;
     little?: boolean;
 }> = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
-
-    const isImmobileQueryParamPresent = location.search.includes("immobileId");
-
-    const getIdImmobile = () => {
-        const queryParams = location.search.split("&");
-        return queryParams
-            .find((el) => el.includes("immobileId"))!
-            .split("=")[1];
-    };
-
-    const getNoteText = (
-        refImmobile: number | undefined,
-        key: string | undefined
-    ) => {
-        if (refImmobile)
-            return "Interessamento all'immobile con Ref. " + refImmobile;
-        if (location.pathname.includes("servizi")) {
-            return `Interessamento per servizio 
-                (${key
-                    ?.split("-")
-                    .map((el) => capitalize(el))
-                    .join(" ")})`;
-        }
-        return "Interessamento generico";
-    };
-
     const [width] = useWindowSize();
 
-    const locationParts = location.pathname.split("/");
-    const key = isImmobileQueryParamPresent
-        ? getIdImmobile()
-        : locationParts.pop();
+    const houses = useSelector((state: RootState) => state.houses.houses);
 
-    let refImmobile = useSelector(
-        (state: RootState) =>
-            state.houses.houses.find((el) => el.id.toString() === key)?.ref
-    );
+    const formatService = (input: string) =>
+        input
+            .split("-")
+            .map((el) => capitalize(el))
+            .join(" ");
+
+    const getPageType = () => {
+        if (
+            location.pathname.includes("/immobili/") ||
+            location.pathname.includes("/servizi/")
+        ) {
+            return "specific-large";
+        } else if (
+            location.search.substring(1).includes("immobileId") ||
+            location.search.substring(1).includes("servizio")
+        ) {
+            return "specific-small";
+        }
+        return "generic";
+    };
+
+    const getNoteText = () => {
+        // if path contains /immobili/ then take key
+        if (location.pathname.includes("/immobili/")) {
+            const id = location.pathname.split("/").pop();
+            const ref = houses.find((el) => el.id === +id!)?.ref;
+            return "Interessamento all'immobile con Ref. " + ref;
+            // if path contains /servizi/ then take key
+        } else if (location.pathname.includes("/servizi/")) {
+            let servizio = location.pathname.split("/").pop();
+            return "Interessamento per servizio - " + formatService(servizio!);
+        } else {
+            const queryParams = location.search.substring(1).split("&");
+            if (queryParams.find((el) => el.includes("immobileId"))) {
+                const id = queryParams
+                    .find((el) => el.includes("immobileId"))
+                    ?.split("=")[1];
+                const ref = houses.find((el) => el.id === +id!)?.ref;
+                return "Interessamento all'immobile con Ref. " + ref;
+            } else if (queryParams.find((el) => el.includes("servizio"))) {
+                const servizio = queryParams
+                    .find((el) => el.includes("servizio"))
+                    ?.split("=")[1];
+                return (
+                    "Interessamento per servizio - " + formatService(servizio!)
+                );
+            }
+        }
+        return "Contatto generico";
+    };
 
     const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -122,6 +138,7 @@ const ContactForm: React.FC<{
 
     const isFormInvalid =
         (inputTelefonoValue.trim() === "" && inputEmailValue.trim() === "") ||
+        inputNameValue.trim() === "" ||
         inputNameIsInvalid ||
         inputEmailIsInvalid ||
         inputTelefonoIsInvalid;
@@ -141,7 +158,16 @@ const ContactForm: React.FC<{
 
     const submitForm = async (event: React.FormEvent) => {
         event.preventDefault();
-        if (isFormInvalid) return;
+        if (isFormInvalid) {
+            if (inputNameValue.trim() === "" || inputNameIsInvalid) {
+                inputNameRef.current?.focus();
+            } else if (inputTelefonoIsInvalid) {
+                inputTelefonoRef.current?.focus();
+            } else if (inputEmailIsInvalid) {
+                inputEmailRef.current?.focus();
+            }
+            return;
+        }
 
         if (!privacyChecked) {
             outlinePrivacyHandler();
@@ -157,7 +183,7 @@ const ContactForm: React.FC<{
             note: "Contatto generico",
         };
 
-        reqBody.note = getNoteText(refImmobile, key);
+        reqBody.note = getNoteText();
 
         const recaptchaToken = await executeRecaptcha!("login");
 
@@ -184,7 +210,6 @@ const ContactForm: React.FC<{
 
     const errorModal = (
         <Modal
-            local={props.local}
             header="Oh no!"
             text={[errorMessage]}
             buttons={[
@@ -213,33 +238,37 @@ const ContactForm: React.FC<{
         message: string;
         color: color;
         action: () => void;
-    }[] = refImmobile
-        ? [
-              {
-                  message: "Chiudi",
-                  color: "blue",
-                  action: () => {
-                      resetForm();
-                      setFormCompleted(false);
+    }[] =
+        getPageType() !== "generic"
+            ? [
+                  {
+                      message: "Chiudi",
+                      color: "blue",
+                      action: () => {
+                          if (getPageType() === "specific-large") {
+                              resetForm();
+                              setFormCompleted(false);
+                          } else {
+                              navigate(-1);
+                          }
+                      },
                   },
-              },
-          ]
-        : [
-              {
-                  message: width > 720 ? "Vai alla Home" : "Home",
-                  color: "blue",
-                  action: () => navigate("/"),
-              },
-              {
-                  message: width > 720 ? "Vai agli Immobili" : "Immobili",
-                  color: "blue_outline",
-                  action: () => navigate("/immobili"),
-              },
-          ];
+              ]
+            : [
+                  {
+                      message: width > 720 ? "Vai alla Home" : "Home",
+                      color: "blue",
+                      action: () => navigate("/"),
+                  },
+                  {
+                      message: width > 720 ? "Vai agli Immobili" : "Immobili",
+                      color: "blue_outline",
+                      action: () => navigate("/immobili"),
+                  },
+              ];
 
     const successModal = (
         <Modal
-            local={props.local}
             header="Ottimo!"
             text={[
                 `Abbiamo ricevuto la tua richiesta!`,
@@ -262,12 +291,16 @@ const ContactForm: React.FC<{
                         props.little ? styles.little : styles.big
                     }  centered`}
                 >
-                    {refImmobile && (
-                        <h5 className={styles.title}>
-                            Ti interessa? <br /> Contattaci
-                        </h5>
-                    )}
+                    {props.little &&
+                        !inputNameIsInvalid &&
+                        !inputEmailIsInvalid &&
+                        !inputTelefonoIsInvalid && (
+                            <h5 className={styles.title}>
+                                Ti interessa? Contattaci!
+                            </h5>
+                        )}
                     <Input
+                        little={props.little}
                         type="text"
                         id="nome"
                         value={inputNameValue}
@@ -286,6 +319,7 @@ const ContactForm: React.FC<{
                         Nome e Cognome
                     </Input>
                     <Input
+                        little={props.little}
                         type="text"
                         id="telefono"
                         value={inputTelefonoValue}
@@ -298,6 +332,7 @@ const ContactForm: React.FC<{
                         Numero di Telefono
                     </Input>
                     <Input
+                        little={props.little}
                         type="email"
                         id="email"
                         value={inputEmailValue}
@@ -342,18 +377,25 @@ const ContactForm: React.FC<{
                     >
                         Invia
                     </Button>
+                    {!props.little && (
+                        <Button
+                            color="blue_outline"
+                            onClick={(e: FormEvent) => {
+                                e.preventDefault();
+                                navigate(-1);
+                            }}
+                        >
+                            Indietro
+                        </Button>
+                    )}
                 </form>
             )}
-            {formCompleted && props.local && successModal}
             {formCompleted &&
-                !props.local &&
                 ReactDOM.createPortal(
                     successModal,
                     document.querySelector("body")!
                 )}
-            {errorMessage && props.local && errorModal}
             {errorMessage &&
-                !props.local &&
                 ReactDOM.createPortal(
                     errorModal,
                     document.querySelector("body")!

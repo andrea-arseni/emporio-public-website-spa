@@ -1,5 +1,6 @@
 import Caratteristiche from "./Caratteristiche";
 import File from "./File";
+import { tipologia } from "./Tipologia";
 
 class House {
     caratteristicheImmobile?: Caratteristiche;
@@ -19,7 +20,7 @@ class House {
     stato: string;
     status: "ATTIVO" | "DISATTIVO";
     superficie: number;
-    tipologia: string;
+    tipologia: tipologia | null;
     titolo: string;
     zona: string;
     files: File[];
@@ -43,7 +44,7 @@ class House {
         this.stato = "";
         this.status = "ATTIVO";
         this.superficie = 0;
-        this.tipologia = "";
+        this.tipologia = null;
         this.titolo = "";
         this.zona = "";
         this.files = [];

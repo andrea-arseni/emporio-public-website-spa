@@ -9,7 +9,7 @@ const Home: React.FC<{}> = () => {
 
     const navigate = useNavigate();
 
-    const goSomewhere = (type: "servizi" | "contattaci") =>
+    const goSomewhere = (type: "servizi" | "contattaci?background=true") =>
         navigate("/" + type);
 
     return (
@@ -52,7 +52,9 @@ const Home: React.FC<{}> = () => {
                                         <button
                                             className="btn btn-primary bordered"
                                             onClick={() =>
-                                                goSomewhere("contattaci")
+                                                goSomewhere(
+                                                    "contattaci?background=true"
+                                                )
                                             }
                                         >
                                             Contattaci

@@ -6,6 +6,10 @@
     padding: 0;
 }
 
+.little * {
+    font-size: small !important;
+}
+
 .invalid {
     color: red;
     font-size: small;

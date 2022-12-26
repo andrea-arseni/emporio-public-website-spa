@@ -20,6 +20,7 @@ import { ReactComponent as HomeIcon } from "../../assets/icons/house.svg";
 import HousePhoto from "../../components/HousePhoto/HousePhoto";
 import ErrorPage from "../Error/Error";
 import useWindowSize from "../../hooks/use-size";
+import { capitalize, correctZona } from "../../utils/stringHandler";
 
 export type FeatureField = {
     value: string;
@@ -123,6 +124,21 @@ const Immobile: React.FC<{}> = () => {
                 label: "Categoria",
             });
         }
+        const tipologia = house.tipologia;
+        if (
+            tipologia &&
+            tipologia !== "box" &&
+            tipologia !== "camera singola" &&
+            tipologia !== "loft" &&
+            tipologia !== "posto auto" &&
+            tipologia !== "posto letto in camera condivisa" &&
+            tipologia !== "uffici open space"
+        ) {
+            caratteristiche.principali.push({
+                value: `${house.locali}`,
+                label: "Locali",
+            });
+        }
         if (isSpecified(house.stato)) {
             caratteristiche.principali.push({
                 value: `${house.stato} ${
@@ -139,7 +155,9 @@ const Immobile: React.FC<{}> = () => {
         }
         if (isSpecified(house.comune)) {
             caratteristiche.principali.push({
-                value: `${house.comune} ${house.zona ? `(${house.zona})` : ""}`,
+                value: `${house.comune} ${
+                    house.zona ? `(${correctZona(house.zona)})` : ""
+                }`,
                 label: "Comune",
             });
         }
@@ -483,7 +501,10 @@ const Immobile: React.FC<{}> = () => {
                                         : ""}
                                 </div>
                                 <div>
-                                    <HomeIcon /> {house.locali} locali
+                                    <HomeIcon />{" "}
+                                    {capitalize(
+                                        house.tipologia ? house.tipologia : ""
+                                    )}
                                 </div>
                                 <div>
                                     <SquareMetersIcon className={styles.icon} />{" "}
