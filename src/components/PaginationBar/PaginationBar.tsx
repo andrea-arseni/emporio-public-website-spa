@@ -26,7 +26,9 @@ const PaginationBar: React.FC<{
                     <ArrowIcon />
                 </div>
             )}
-            {Number.parseInt(props.currentPage) === 1 && <div></div>}
+            {Number.parseInt(props.currentPage) === 1 && (
+                <div className={styles.arrow}></div>
+            )}
             <div>
                 {`${props.numberOfResults} risultat${
                     props.numberOfResults === 1 ? "o" : "i"
@@ -46,7 +48,7 @@ const PaginationBar: React.FC<{
                 </div>
             )}
             {Number.parseInt(props.currentPage) === numberOfPages && (
-                <div></div>
+                <div className={styles.arrow}></div>
             )}
         </div>
     );
