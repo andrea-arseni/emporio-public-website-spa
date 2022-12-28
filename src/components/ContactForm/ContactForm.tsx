@@ -147,6 +147,8 @@ const ContactForm: React.FC<{
 
     const [errorMessage, setErrorMessage] = useState<string>("");
 
+    const [errorAction, setErrorAction] = useState<(() => void) | null>(null);
+
     const resetForm = () => {
         inputEmailReset();
         inputNameReset();
@@ -161,23 +163,23 @@ const ContactForm: React.FC<{
 
         if (isFormInvalid) {
             if (inputNameValue.trim() === "") {
-                alert("Nome obbligatorio");
-                inputNameRef.current!.focus();
+                setErrorAction(() => () => inputNameRef.current!.focus());
+                setErrorMessage("Nome obbligatorio");
             } else if (inputNameIsInvalid) {
-                alert("Nome da correggere");
-                inputNameRef.current!.focus();
+                setErrorAction(() => () => inputNameRef.current!.focus());
+                setErrorMessage("Nome da correggere");
             } else if (inputTelefonoIsInvalid) {
-                alert("Telefono da correggere");
-                inputTelefonoRef.current?.focus();
+                setErrorAction(() => () => inputTelefonoRef.current?.focus());
+                setErrorMessage("Telefono da correggere");
             } else if (inputEmailIsInvalid) {
-                alert("Email da correggere");
-                inputEmailRef.current?.focus();
+                setErrorAction(() => () => inputEmailRef.current?.focus());
+                setErrorMessage("Email da correggere");
             } else if (
                 inputTelefonoValue.trim() === "" &&
                 inputEmailValue.trim() === ""
             ) {
-                alert("Inserire almeno uno tra telefono ed email");
-                inputTelefonoRef.current?.focus();
+                setErrorAction(() => () => inputTelefonoRef.current?.focus());
+                setErrorMessage("Inserire almeno uno tra telefono ed email");
             }
             return;
         }
@@ -221,29 +223,45 @@ const ContactForm: React.FC<{
         }
     };
 
+    const getErrorModalButtons = () => {
+        return !errorAction
+            ? [
+                  {
+                      message: "Riprova",
+                      color: "red" as color,
+                      action: () => {
+                          setErrorMessage("");
+                          privacyCheckHandler();
+                      },
+                  },
+                  {
+                      message: "Ricomincia",
+                      color: "red_outline" as color,
+                      action: () => {
+                          setErrorMessage("");
+                          resetForm();
+                          privacyCheckHandler();
+                      },
+                  },
+              ]
+            : [
+                  {
+                      message: "Ok",
+                      color: "blue_outline" as color,
+                      action: () => {
+                          errorAction!();
+                          setErrorMessage("");
+                          setErrorAction(null);
+                      },
+                  },
+              ];
+    };
+
     const errorModal = (
         <Modal
-            header="Oh no!"
+            header="Attenzione!"
             text={[errorMessage]}
-            buttons={[
-                {
-                    message: "Riprova",
-                    color: "red",
-                    action: () => {
-                        setErrorMessage("");
-                        privacyCheckHandler();
-                    },
-                },
-                {
-                    message: "Ricomincia",
-                    color: "red_outline",
-                    action: () => {
-                        setErrorMessage("");
-                        resetForm();
-                        privacyCheckHandler();
-                    },
-                },
-            ]}
+            buttons={getErrorModalButtons()}
         />
     );
 
