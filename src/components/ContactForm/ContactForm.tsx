@@ -158,13 +158,26 @@ const ContactForm: React.FC<{
 
     const submitForm = async (event: React.FormEvent) => {
         event.preventDefault();
+
         if (isFormInvalid) {
-            if (inputNameValue.trim() === "" || inputNameIsInvalid) {
-                inputNameRef.current?.focus();
+            if (inputNameValue.trim() === "") {
+                alert("Nome obbligatorio");
+                inputNameRef.current!.focus();
+            } else if (inputNameIsInvalid) {
+                alert("Nome da correggere");
+                inputNameRef.current!.focus();
             } else if (inputTelefonoIsInvalid) {
+                alert("Telefono da correggere");
                 inputTelefonoRef.current?.focus();
             } else if (inputEmailIsInvalid) {
+                alert("Email da correggere");
                 inputEmailRef.current?.focus();
+            } else if (
+                inputTelefonoValue.trim() === "" &&
+                inputEmailValue.trim() === ""
+            ) {
+                alert("Inserire almeno uno tra telefono ed email");
+                inputTelefonoRef.current?.focus();
             }
             return;
         }

@@ -1,6 +1,7 @@
 import styles from "./HouseCard.module.css";
 import notAvailable from "../../../assets/notAvailable.png";
 import { stringifyNumber } from "../../../utils/numberHandler";
+import { ReactComponent as EuroIcon } from "../../../assets/icons/euro.svg";
 import { ReactComponent as SquareMetersIcon } from "../../../assets/icons/planimetry.svg";
 import { ReactComponent as TownIcon } from "../../../assets/icons/building.svg";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +15,7 @@ import { addImage } from "../../../store/houses-slice";
 import { RootState } from "../../../store";
 import { capitalize, correctZona } from "../../../utils/stringHandler";
 import File from "../../../types/File";
+import useWindowSize from "../../../hooks/use-size";
 
 const HouseCard: React.FC<{
     house: House;
@@ -26,6 +28,8 @@ const HouseCard: React.FC<{
             ? house.files[0].base64
             : null;
     });
+
+    const [width] = useWindowSize();
 
     const dispatch = useDispatch();
 
@@ -98,50 +102,60 @@ const HouseCard: React.FC<{
             onClick={navigateToDedicatedHousePage}
             className={`${styles.houseCard}`}
         >
-            <div className={`centered ${styles.imgWrapper}`}>
-                {isLoading && (
-                    <div
-                        className={`fullHeight centered ${styles.spinnerWrapper}`}
-                    >
-                        <Spinner type="blue" />
-                    </div>
-                )}
-                {!isLoading && (
-                    <img alt="Foto non disponibile" src={imageString} />
-                )}
-            </div>
-            <div className={styles.textPart}>
+            {width <= 450 && (
                 <p className={styles.titolo}>
                     <span className={styles.ref}>{props.house.ref}</span>
                     {props.house.titolo}
                 </p>
-                <span>
-                    <i className="bi bi-currency-euro rightSpace"></i>
-                    {`${capitalize(props.house.contratto)} a ${stringifyNumber(
-                        props.house.prezzo
-                    )} €
+            )}
+            <div className={`${styles.wrapper}`}>
+                <div className={`centered ${styles.imgWrapper}`}>
+                    {isLoading && (
+                        <div
+                            className={`fullHeight centered ${styles.spinnerWrapper}`}
+                        >
+                            <Spinner type="blue" />
+                        </div>
+                    )}
+                    {!isLoading && (
+                        <img alt="Foto non disponibile" src={imageString} />
+                    )}
+                </div>
+                <div className={styles.textPart}>
+                    {width > 450 && (
+                        <p className={styles.titolo}>
+                            <span className={styles.ref}>
+                                {props.house.ref}
+                            </span>
+                            {props.house.titolo}
+                        </p>
+                    )}
+                    <span>
+                        <EuroIcon className={styles.euroicon} />{" "}
+                        {`${stringifyNumber(props.house.prezzo)} 
                     ${props.house.contratto === "affitto" ? " al mese" : ""}`}
-                </span>
-                <span>
-                    <i className="bi bi-house-door rightSpace"></i>
-                    {`${
-                        props.house.tipologia
-                            ? capitalize(props.house.tipologia)
-                            : ""
-                    } ${addLocali()}`}
-                </span>
-                <span>
-                    <SquareMetersIcon className={styles.icon} />{" "}
-                    {`${props.house.superficie} m²
-                    ${window.innerWidth > 500 ? "di superficie" : ""}`}
-                </span>
-                <span>
-                    <TownIcon className={styles.icon} />
-                    {props.house.comune}{" "}
-                    {props.house.zona && window.innerWidth > 500
-                        ? `(${correctZona(props.house.zona)})`
-                        : ""}
-                </span>
+                    </span>
+                    <span>
+                        <i className="bi bi-house-door rightSpace"></i>
+                        {`${
+                            props.house.tipologia
+                                ? capitalize(props.house.tipologia)
+                                : ""
+                        } ${addLocali()}`}
+                    </span>
+                    <span>
+                        <SquareMetersIcon className={styles.icon} />{" "}
+                        {`${props.house.superficie} m²
+                    ${width > 500 ? "di superficie" : ""}`}
+                    </span>
+                    <span>
+                        <TownIcon className={styles.icon} />
+                        {props.house.comune}{" "}
+                        {props.house.zona && width > 500
+                            ? `(${correctZona(props.house.zona)})`
+                            : ""}
+                    </span>
+                </div>
             </div>
         </div>
     );
