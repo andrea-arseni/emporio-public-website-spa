@@ -20,7 +20,8 @@ export const tvMessages: tvMessage[] = [
     {
         image: domandeImage,
         title: "Hai domande inerenti la compravendita o l'affitto di un immobile?",
-        message: "Puoi ricevere senza impegno le risposte che cerchi",
+        message:
+            "Potresti ricevere gratis e senza impegno le risposte che stai cercando",
     },
     {
         image: vecchiImage,

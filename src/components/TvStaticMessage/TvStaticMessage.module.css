@@ -36,9 +36,22 @@
     text-align: center;
     box-sizing: border-box;
     font-size: x-large;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-flow: column;
 }
 
 .darkBackdrop {
     z-index: 8003;
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+.title {
+    transform: scale(1.8);
+    width: 65%;
+}
+
+.body {
+    width: 86%;
 }

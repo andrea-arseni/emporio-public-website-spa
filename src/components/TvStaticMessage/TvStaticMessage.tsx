@@ -20,17 +20,15 @@ const TvStaticMessage: React.FC<{
                 src={props.item.image}
             />
             <div className={`${styles.darkBackdrop} ${styles.absolute}`}></div>
-            <div
-                className={`centered vertical ${styles.absolute} ${styles.text}`}
-            >
-                <h1>{props.item.title}</h1>
-                <h3>
+            <div className={`${styles.absolute} ${styles.text}`}>
+                <div></div>
+                <h1 className={styles.title}>{props.item.title}</h1>
+                <h2 className={styles.body}>
                     {props.item.message}
-                    <br />
                     <br />
                     Vuoi saperne di più?{" "}
                     <span style={{ color: "yellow" }}>Entra in agenzia!</span>
-                </h3>
+                </h2>
             </div>
         </div>
     );
