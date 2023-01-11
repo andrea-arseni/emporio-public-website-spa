@@ -102,7 +102,7 @@ const HouseCard: React.FC<{
             onClick={navigateToDedicatedHousePage}
             className={`${styles.houseCard}`}
         >
-            {width <= 450 && (
+            {width <= 550 && (
                 <p className={styles.titolo}>
                     <span className={styles.ref}>{props.house.ref}</span>
                     {props.house.titolo}
@@ -121,41 +121,43 @@ const HouseCard: React.FC<{
                         <img alt="Foto non disponibile" src={imageString} />
                     )}
                 </div>
-                <div className={styles.textPart}>
-                    {width > 450 && (
-                        <p className={styles.titolo}>
-                            <span className={styles.ref}>
-                                {props.house.ref}
-                            </span>
-                            {props.house.titolo}
-                        </p>
-                    )}
-                    <span>
-                        <EuroIcon className={styles.euroicon} />{" "}
-                        {`${stringifyNumber(props.house.prezzo)} 
+                {
+                    <div className={styles.textPart}>
+                        {width > 550 && (
+                            <p className={styles.titolo}>
+                                <span className={styles.ref}>
+                                    {props.house.ref}
+                                </span>
+                                {props.house.titolo}
+                            </p>
+                        )}
+                        <span>
+                            <EuroIcon className={styles.euroicon} />{" "}
+                            {`${stringifyNumber(props.house.prezzo)} 
                     ${props.house.contratto === "affitto" ? " al mese" : ""}`}
-                    </span>
-                    <span>
-                        <i className="bi bi-house-door rightSpace"></i>
-                        {`${
-                            props.house.tipologia
-                                ? capitalize(props.house.tipologia)
-                                : ""
-                        } ${addLocali()}`}
-                    </span>
-                    <span>
-                        <SquareMetersIcon className={styles.icon} />{" "}
-                        {`${props.house.superficie} m²
+                        </span>
+                        <span>
+                            <i className="bi bi-house-door rightSpace"></i>
+                            {`${
+                                props.house.tipologia
+                                    ? capitalize(props.house.tipologia)
+                                    : ""
+                            } ${addLocali()}`}
+                        </span>
+                        <span>
+                            <SquareMetersIcon className={styles.icon} />{" "}
+                            {`${props.house.superficie} m²
                     ${width > 500 ? "di superficie" : ""}`}
-                    </span>
-                    <span>
-                        <TownIcon className={styles.icon} />
-                        {props.house.comune}{" "}
-                        {props.house.zona && width > 500
-                            ? `(${correctZona(props.house.zona)})`
-                            : ""}
-                    </span>
-                </div>
+                        </span>
+                        <span>
+                            <TownIcon className={styles.icon} />
+                            {props.house.comune}{" "}
+                            {props.house.zona && width > 500
+                                ? `(${correctZona(props.house.zona)})`
+                                : ""}
+                        </span>
+                    </div>
+                }
             </div>
         </div>
     );

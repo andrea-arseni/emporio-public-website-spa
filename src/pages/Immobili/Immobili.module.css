@@ -1,8 +1,8 @@
 .immobili {
     background: linear-gradient(
         to left,
-        rgb(251, 251, 251),
-        rgb(232, 232, 232)
+        rgb(255, 255, 255),
+        rgb(245, 245, 245)
     );
 }
 
@@ -12,20 +12,24 @@
 
 .filterFormWrapper {
     width: 100%;
-    margin: 12px 0px;
-    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .row {
     height: calc(100% - 46px);
 }
 
-.filterFormWrapper * {
-    max-width: 400px;
-}
-
 .housePart {
     flex-flow: column;
+}
+
+@media screen and (max-width: 840px) {
+    .filterFormWrapper {
+        position: relative;
+        right: 20px;
+    }
 }
 
 @media screen and (max-width: 767px) {

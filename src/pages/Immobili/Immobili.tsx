@@ -111,7 +111,7 @@ const Immobili: React.FC = () => {
                     {houseContent()}
                 </div>
                 {width >= 768 && (
-                    <div className={` col-md-4 centered`}>
+                    <div className={`col-md-4 ${styles.filterFormWrapper}`}>
                         <FilterForm
                             setSearchParams={setSearchParams}
                             searchParams={searchParams}
