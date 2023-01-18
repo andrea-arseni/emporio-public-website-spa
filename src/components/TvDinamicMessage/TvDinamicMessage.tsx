@@ -3,18 +3,11 @@ import styles from "./TvDinamicMessage.module.css";
 import { stringifyNumber } from "../../utils/numberHandler";
 
 const TvDinamicMessage: React.FC<{
-    currentIndex: number;
     itemIndex: number;
-    isPreviousItem: (index: number) => boolean;
     house: House;
 }> = (props) => {
     return (
-        <div
-            key={props.house.id}
-            className={`${styles.wrapperTv} ${styles.absolute} ${
-                props.itemIndex === props.currentIndex ? styles.active : ""
-            } ${props.isPreviousItem(props.itemIndex) ? styles.ended : ""}`}
-        >
+        <div key={props.house.id} className={` ${styles.absolute}`}>
             <img
                 className={`${styles.imageTv} ${styles.absolute}`}
                 alt="Immagine non disponibile"

@@ -1,4 +1,3 @@
-import styles from "./Tv.module.css";
 import { tvMessages } from "../../static-data/tv-messages";
 import { hideBanner } from "../../store/cookie-slice";
 import { useDispatch } from "react-redux";
@@ -63,42 +62,30 @@ const Tv: React.FC<{}> = () => {
         fetchImmobili();
     }, []);
 
-    let [currentIndex, setCurrentIndex] = useState(0);
-
-    const isPreviousItem = (index: number) =>
-        index === currentIndex - 1 ||
-        (currentIndex === 0 && index === listOfItems.length - 1);
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setCurrentIndex((prevIndex) =>
-                prevIndex === listOfItems.length - 1 ? 0 : ++prevIndex
-            );
-        }, 5000);
-        return () => clearTimeout(timeout);
-    }, [currentIndex, listOfItems.length]);
-
     return (
-        <div className={`${styles.container}`}>
-            {listOfItems.map((el, index) => {
-                return el.id ? (
-                    <TvDinamicMessage
-                        key={el.id}
-                        house={el}
-                        currentIndex={currentIndex}
-                        isPreviousItem={isPreviousItem}
-                        itemIndex={index}
-                    />
-                ) : (
-                    <TvStaticMessage
-                        key={el.title + index}
-                        item={el}
-                        currentIndex={currentIndex}
-                        isPreviousItem={isPreviousItem}
-                        itemIndex={index}
-                    />
-                );
-            })}
+        <div
+            className="carousel slide"
+            style={{ height: "100vh" }}
+            data-bs-ride="carousel"
+        >
+            <div className="carousel-inner" style={{ height: "100%" }}>
+                {listOfItems.map((el, index) => {
+                    return el.id ? (
+                        <div key={el.id} className={`carousel-item`}>
+                            <TvDinamicMessage house={el} itemIndex={index} />
+                        </div>
+                    ) : (
+                        <div
+                            key={el.title + index}
+                            className={`carousel-item ${
+                                index === 0 ? "active" : ""
+                            }`}
+                        >
+                            <TvStaticMessage item={el} itemIndex={index} />
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 };

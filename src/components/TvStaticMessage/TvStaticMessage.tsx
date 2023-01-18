@@ -2,18 +2,11 @@ import tvMessage from "../../types/TvMessage";
 import styles from "./TvStaticMessage.module.css";
 
 const TvStaticMessage: React.FC<{
-    currentIndex: number;
     itemIndex: number;
-    isPreviousItem: (index: number) => boolean;
     item: tvMessage;
 }> = (props) => {
     return (
-        <div
-            key={props.item.title}
-            className={`${styles.wrapperTv} ${styles.absolute} ${
-                props.itemIndex === props.currentIndex ? styles.active : ""
-            } ${props.isPreviousItem(props.itemIndex) ? styles.ended : ""}`}
-        >
+        <div key={props.item.title} className={` ${styles.absolute}`}>
             <img
                 className={`${styles.imageTv} ${styles.absolute}`}
                 alt="Immagine non disponibile"
