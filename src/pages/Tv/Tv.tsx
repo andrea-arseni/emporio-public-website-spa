@@ -7,6 +7,7 @@ import TvDinamicMessage from "../../components/TvDinamicMessage/TvDinamicMessage
 import House from "../../types/House";
 import { URL } from "../../env";
 import axios from "axios";
+import styles from "./Tv.module.css";
 
 const Tv: React.FC<{}> = () => {
     const dispatch = useDispatch();
@@ -64,7 +65,7 @@ const Tv: React.FC<{}> = () => {
 
     return (
         <div
-            className="carousel slide"
+            className={`carousel slide ${styles.wrapper}`}
             style={{ height: "100vh" }}
             data-bs-ride="carousel"
         >

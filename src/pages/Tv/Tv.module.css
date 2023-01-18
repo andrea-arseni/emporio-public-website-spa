@@ -5,3 +5,7 @@
     background: linear-gradient(darkgray, black);
     z-index: 8001;
 }
+
+.wrapper {
+    z-index: 9999;
+}
