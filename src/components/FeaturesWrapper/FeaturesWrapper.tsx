@@ -30,7 +30,7 @@ const FeaturesWrapper: React.FC<{
                     {el.label}
                 </div>
                 <div style={{ fontStyle: "italic" }}>
-                    {el.value.includes("kWh") ? el.value : capitalize(el.value)}
+                    {capitalize(el.value)}
                 </div>
             </div>
         ));

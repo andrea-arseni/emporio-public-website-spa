@@ -20,7 +20,11 @@ import { ReactComponent as HomeIcon } from "../../assets/icons/house.svg";
 import HousePhoto from "../../components/HousePhoto/HousePhoto";
 import ErrorPage from "../Error/Error";
 import useWindowSize from "../../hooks/use-size";
-import { capitalize, correctZona } from "../../utils/stringHandler";
+import {
+    capitalize,
+    capitalizeAllWords,
+    correctZona,
+} from "../../utils/stringHandler";
 
 export type FeatureField = {
     value: string;
@@ -84,13 +88,15 @@ const Immobile: React.FC<{}> = () => {
 
     if (errorMessage) return <ErrorPage message={errorMessage} />;
 
-    const isSpecified = (valore: string) =>
+    const isSpecified = (valore: string | null | undefined | number) =>
         valore &&
-        valore.toLowerCase() !== "undefined" &&
-        valore.toLowerCase() !== "null";
+        valore.toString().trim().toLowerCase() !== "undefined" &&
+        valore.toString().trim().toLowerCase() !== "null";
 
-    const displayNonSpecificatoSeAssente = (valore: any) =>
-        isSpecified(valore) ? valore : "Non specificato";
+    const displayNonSpecificatoSeAssente = (
+        valore: any,
+        finalLetter: "o" | "i" | "a" | "e" = "o"
+    ) => (isSpecified(valore) ? valore : `Non specificat${finalLetter}`);
 
     let caratteristiche: {
         principali: FeatureField[];
@@ -117,10 +123,9 @@ const Immobile: React.FC<{}> = () => {
     if (house) {
         if (isSpecified(house.categoria) && isSpecified(house.contratto)) {
             caratteristiche.principali.push({
-                value: `${
-                    house.contratto.charAt(0).toUpperCase() +
-                    house.contratto.substring(1)
-                } di immobile ${house.categoria}`,
+                value: `${capitalize(house.contratto)} di immobile ${
+                    house.categoria
+                }`,
                 label: "Categoria",
             });
         }
@@ -132,7 +137,8 @@ const Immobile: React.FC<{}> = () => {
             tipologia !== "loft" &&
             tipologia !== "posto auto" &&
             tipologia !== "posto letto in camera condivisa" &&
-            tipologia !== "uffici open space"
+            tipologia !== "uffici open space" &&
+            isSpecified(house.locali)
         ) {
             caratteristiche.principali.push({
                 value: `${house.locali}`,
@@ -149,13 +155,14 @@ const Immobile: React.FC<{}> = () => {
         }
         if (isSpecified(house.indirizzo)) {
             caratteristiche.principali.push({
-                value: `${house.indirizzo}`,
+                value: `${capitalizeAllWords(house.indirizzo)}`,
                 label: "Indirizzo",
             });
         }
+
         if (isSpecified(house.comune)) {
             caratteristiche.principali.push({
-                value: `${house.comune} ${
+                value: `${capitalizeAllWords(house.comune)} ${
                     house.zona ? `(${correctZona(house.zona)})` : ""
                 }`,
                 label: "Comune",
@@ -164,33 +171,52 @@ const Immobile: React.FC<{}> = () => {
     }
 
     if (house && house.caratteristicheImmobile) {
-        caratteristiche.efficienzaEnergetica = [
-            {
+        caratteristiche.efficienzaEnergetica = [];
+
+        if (isSpecified(house.classeEnergetica)) {
+            caratteristiche.efficienzaEnergetica.push({
                 value: `${
-                    house.classeEnergetica === "ESENTE"
+                    house.classeEnergetica.toUpperCase() === "ESENTE"
                         ? "Esente"
-                        : house.classeEnergetica.trim()
+                        : capitalize(house.classeEnergetica.trim())
                 }${
-                    house.classeEnergetica !== "ESENTE"
+                    house.classeEnergetica.toUpperCase() !== "ESENTE"
                         ? ` ${
-                              house.consumo <= 175 ? house.consumo : `> 175`
+                              house.consumo > 0 && house.consumo < 175
+                                  ? house.consumo
+                                  : `> 175`
                           } kWh/m² anno`
                         : ""
                 }`,
                 label: "Classe energetica",
-            },
-            {
+            });
+        } else {
+            caratteristiche.efficienzaEnergetica.push({
+                value: "Non Specificata",
+                label: "Classe Energetica",
+            });
+        }
+
+        if (isSpecified(house.riscaldamento)) {
+            caratteristiche.efficienzaEnergetica.push({
                 value: `${house.riscaldamento} ${
-                    house.caratteristicheImmobile.combustibile
+                    isSpecified(house.caratteristicheImmobile.combustibile)
                         ? `(Combustibile ${house.caratteristicheImmobile.combustibile.toLowerCase()})`
                         : ""
                 }`,
                 label: "Riscaldamento",
-            },
-        ];
+            });
+        } else {
+            caratteristiche.efficienzaEnergetica.push({
+                value: "Non Specificato",
+                label: "Riscaldamento",
+            });
+        }
+
         if (
             house.riscaldamento &&
-            house.riscaldamento.trim().toLowerCase() === "autonomo"
+            house.riscaldamento.trim().toLowerCase() === "autonomo" &&
+            isSpecified(house.caratteristicheImmobile.speseRiscaldamento)
         ) {
             caratteristiche.efficienzaEnergetica.push({
                 value:
@@ -206,7 +232,7 @@ const Immobile: React.FC<{}> = () => {
             });
         }
 
-        if (house.caratteristicheImmobile.annoCostruzione) {
+        if (isSpecified(house.caratteristicheImmobile.annoCostruzione)) {
             caratteristiche.costruzione.push({
                 value: house.caratteristicheImmobile.annoCostruzione.toString(),
                 label: "Anno di costruzione dell'immobile",
@@ -242,8 +268,10 @@ const Immobile: React.FC<{}> = () => {
         });
 
         if (isSpecified(house.piano)) {
+            let piano = house.piano;
+            if (piano.length === 1) piano = piano + "°";
             caratteristiche.specifiche.push({
-                value: `${house.piano} (${
+                value: `${piano} (${
                     house.caratteristicheImmobile.ascensore ? `Con` : "Senza"
                 } ascensore)`,
                 label: "Piano",
@@ -252,21 +280,26 @@ const Immobile: React.FC<{}> = () => {
 
         if (isSpecified(house.caratteristicheImmobile.esposizione)) {
             caratteristiche.specifiche.push({
-                value: house.caratteristicheImmobile.esposizione,
+                value: capitalizeAllWords(
+                    house.caratteristicheImmobile.esposizione
+                ),
                 label: "Esposizione",
             });
         }
 
+        const checkPresence = (value: string) =>
+            value.trim() === "0" ? "Non Presenti" : value.toString();
+
         if (isSpecified(house.caratteristicheImmobile.balconi)) {
             caratteristiche.specifiche.push({
-                value: house.caratteristicheImmobile.balconi,
+                value: checkPresence(house.caratteristicheImmobile.balconi),
                 label: "Balconi",
             });
         }
 
         if (isSpecified(house.caratteristicheImmobile.terrazzi)) {
             caratteristiche.specifiche.push({
-                value: house.caratteristicheImmobile.terrazzi,
+                value: checkPresence(house.caratteristicheImmobile.terrazzi),
                 label: "Terrazzi",
             });
         }
@@ -279,8 +312,9 @@ const Immobile: React.FC<{}> = () => {
         }
 
         if (isSpecified(house.caratteristicheImmobile.altezza)) {
+            const altezza: number = +house.caratteristicheImmobile.altezza;
             caratteristiche.specifiche.push({
-                value: house.caratteristicheImmobile.altezza + " metri",
+                value: altezza.toFixed(2) + " metri",
                 label: "Altezza",
             });
         }
@@ -387,7 +421,8 @@ const Immobile: React.FC<{}> = () => {
             },
             {
                 value: displayNonSpecificatoSeAssente(
-                    house.caratteristicheImmobile.speseExtra
+                    house.caratteristicheImmobile.speseExtra,
+                    "e"
                 ),
                 label: "Spese extra",
             },

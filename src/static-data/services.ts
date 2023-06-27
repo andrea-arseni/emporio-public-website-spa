@@ -42,8 +42,9 @@ export const services: service[] = [
         image: affittareImage,
         title: "AFFITTARE / LOCARE",
         message: [
-            "Per chi decide di affittare o locare il suo immobile chiediamo una provvigione fissa di solo 300 € più IVA a contratto stipulato.",
-            "Forniamo un servizio unico: non solo ci adoperiamo per trovare un inquilino referenziato e rispettoso dell'immobile, ma dopo la firma del contratto continuiamo a sostenervi ed assistervi rimanendo un riferimento per tutte le potenziali problematiche che potrebbero sorgere nel rapporto proprietà-inquilini",
+            //"Per chi decide di affittare o locare il suo immobile chiediamo una provvigione fissa di solo 300 € più IVA a contratto stipulato.",
+            "Ci adoperiamo per trovare un inquilino referenziato e rispettoso dell'immobile",
+            "Ma non solo, dopo la firma del contratto continuiamo a sostenervi ed assistervi rimanendo un riferimento per tutte le potenziali problematiche che potrebbero sorgere nel rapporto proprietà-inquilini",
         ],
     },
     {
